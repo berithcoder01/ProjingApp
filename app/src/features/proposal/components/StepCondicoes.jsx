@@ -1,49 +1,54 @@
 import React from 'react';
-import { ChevronRight, ArrowRight, ArrowLeft } from 'lucide-react';
+import { ChevronRight, ArrowRight, ArrowLeft, Truck, FileText, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Input from '../../../shared/Input';
 import Button from '../../../shared/Button';
 
-const StepCondicoes = ({ data, onChange, onNext, onBack }) => {
+const StepCondicoes = ({ data, onChange, onNext, onBack, materialMode = false }) => {
   const update = (field, val) => onChange({ ...data, [field]: val });
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-8 pb-20"
     >
       <div className="mb-4">
         <h2 className="text-2xl font-bold font-syne text-white">Condições Comerciais</h2>
-        <p className="text-muted text-sm mt-1">Configure o modelo de contrato, faturamento e visibilidade.</p>
+        <p className="text-muted text-sm mt-1">
+          {materialMode
+            ? 'Configure entrega, pagamento, especificações técnicas e garantia do material.'
+            : 'Configure o modelo de contrato, faturamento e visibilidade.'}
+        </p>
       </div>
 
-      {/* Tipo de Proposta */}
-      <div className="bg-surface border-2 border-border p-6 rounded-2xl space-y-4">
-        <label className="text-[10px] font-bold uppercase tracking-widest text-muted">Modelo de Precificação</label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <button 
-            type="button"
-            onClick={() => update('tipoProposta', 'valor_fechado')}
-            className={`p-4 rounded-xl border-2 transition-all text-left ${
-              data.tipoProposta === 'valor_fechado' ? 'border-accent bg-accent/10' : 'border-border bg-bg hover:border-accent/30'
-            }`}
-          >
-            <div className={`font-bold text-sm mb-1 ${data.tipoProposta === 'valor_fechado' ? 'text-white' : 'text-muted'}`}>Valor Fechado</div>
-            <div className="text-[11px] text-muted">Escopo e quantidades fixas.</div>
-          </button>
-          <button 
-            type="button"
-            onClick={() => update('tipoProposta', 'servico_continuo')}
-            className={`p-4 rounded-xl border-2 transition-all text-left ${
-              data.tipoProposta === 'servico_continuo' ? 'border-accent bg-accent/10' : 'border-border bg-bg hover:border-accent/30'
-            }`}
-          >
-            <div className={`font-bold text-sm mb-1 ${data.tipoProposta === 'servico_continuo' ? 'text-white' : 'text-muted'}`}>Medição / Contínuo</div>
-            <div className="text-[11px] text-muted">Faturamento baseado na execução real.</div>
-          </button>
+      {!materialMode && (
+        <div className="bg-surface border-2 border-border p-6 rounded-2xl space-y-4">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-muted">Modelo de Precificação</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => update('tipoProposta', 'valor_fechado')}
+              className={`p-4 rounded-xl border-2 transition-all text-left ${
+                data.tipoProposta === 'valor_fechado' ? 'border-accent bg-accent/10' : 'border-border bg-bg hover:border-accent/30'
+              }`}
+            >
+              <div className={`font-bold text-sm mb-1 ${data.tipoProposta === 'valor_fechado' ? 'text-white' : 'text-muted'}`}>Valor Fechado</div>
+              <div className="text-[11px] text-muted">Escopo e quantidades fixas.</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => update('tipoProposta', 'servico_continuo')}
+              className={`p-4 rounded-xl border-2 transition-all text-left ${
+                data.tipoProposta === 'servico_continuo' ? 'border-accent bg-accent/10' : 'border-border bg-bg hover:border-accent/30'
+              }`}
+            >
+              <div className={`font-bold text-sm mb-1 ${data.tipoProposta === 'servico_continuo' ? 'text-white' : 'text-muted'}`}>Medição / Contínuo</div>
+              <div className="text-[11px] text-muted">Faturamento baseado na execução real.</div>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="space-y-4">
         {/* SEÇÃO: FORMA DE PAGAMENTO */}
@@ -90,7 +95,7 @@ const StepCondicoes = ({ data, onChange, onNext, onBack }) => {
                         <div className="flex flex-col gap-1.5">
                           <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1">Prazo da Entrada</label>
                           <div className="w-full bg-accent/10 border-2 border-accent rounded-xl px-4 py-3 text-sm text-accent font-bold">
-                            Pagamento no início da obra
+                            {materialMode ? 'Pagamento no ato do pedido' : 'Pagamento no início da obra'}
                           </div>
                         </div>
                       ) : (
@@ -109,7 +114,7 @@ const StepCondicoes = ({ data, onChange, onNext, onBack }) => {
                             onChange={() => update('tipoPrazoEntrada', 'dias')}
                             className="w-4 h-4 accent-accent2"
                           />
-                          <span className="text-sm text-white group-hover:text-accent2 transition-colors">Em dias após assinatura</span>
+                          <span className="text-sm text-white group-hover:text-accent2 transition-colors">{materialMode ? 'Em dias após aprovação' : 'Em dias após assinatura'}</span>
                         </label>
                         <label className="flex items-center gap-2 cursor-pointer group">
                           <input
@@ -120,7 +125,7 @@ const StepCondicoes = ({ data, onChange, onNext, onBack }) => {
                             onChange={() => update('tipoPrazoEntrada', 'inicio')}
                             className="w-4 h-4 accent-accent2"
                           />
-                          <span className="text-sm text-white group-hover:text-accent2 transition-colors">No início da obra</span>
+                          <span className="text-sm text-white group-hover:text-accent2 transition-colors">{materialMode ? 'No ato do pedido' : 'No início da obra'}</span>
                         </label>
                       </div>
                     </div>
@@ -219,100 +224,194 @@ const StepCondicoes = ({ data, onChange, onNext, onBack }) => {
           )}
         </div>
 
-        {/* SEÇÃO: GARANTIAS */}
-        <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showGarantias !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
-          <div 
-            className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
-            onClick={() => update('showGarantias', data.showGarantias === false)}
-          >
-            <div className="flex items-center gap-3">
-              <input 
-                type="checkbox" 
-                checked={data.showGarantias !== false} 
-                readOnly
-                className="w-5 h-5 rounded border-border text-accent focus:ring-accent bg-bg"
-              />
+        {/* SEÇÃO: ENTREGA E FRETE (apenas material) */}
+        {materialMode && (
+          <div className="bg-surface border-2 border-accent/40 rounded-2xl shadow-lg shadow-accent/5 overflow-hidden">
+            <div className="p-6 space-y-6">
+              <div className="flex items-center gap-3 mb-2">
+                <Truck size={20} className="text-accent2" />
+                <div>
+                  <h3 className="font-bold text-white text-sm">Prazo e Condições de Entrega</h3>
+                  <p className="text-[10px] text-muted uppercase tracking-wider">Logística, local e tipo de frete</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Input label="Prazo de Entrega" type="number" value={data.prazoEntrega || ''} onChange={e => update('prazoEntrega', e.target.value)} suffix="dias" />
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1 mb-2 block">Local de Entrega</label>
+                  <input
+                    type="text"
+                    value={data.localEntrega || ''}
+                    onChange={e => update('localEntrega', e.target.value)}
+                    placeholder="Ex.: Obra do cliente, em Marialva - PR"
+                    className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-accent transition-all"
+                  />
+                </div>
+              </div>
               <div>
-                <h3 className="font-bold text-white text-sm">Garantias</h3>
-                <p className="text-[10px] text-muted uppercase tracking-wider">Prazos contra defeitos e acidentes</p>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1 mb-3 block">Tipo de Frete (Incoterm)</label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {['CIF', 'FOB', 'A combinar', 'Retirada'].map(tipo => (
+                    <button
+                      key={tipo}
+                      type="button"
+                      onClick={() => update('tipoFrete', tipo)}
+                      className={`p-3 rounded-xl border-2 text-xs font-bold transition-all ${
+                        (data.tipoFrete || 'CIF') === tipo ? 'border-accent bg-accent/10 text-white' : 'border-border bg-bg text-muted hover:border-accent/30'
+                      }`}
+                    >
+                      {tipo}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-            <div className={`transition-transform duration-300 ${data.showGarantias !== false ? 'rotate-90' : ''}`}>
-              <ChevronRight size={18} className="text-muted" />
+          </div>
+        )}
+
+        {/* SEÇÃO: ESPECIFICAÇÕES TÉCNICAS (apenas material) */}
+        {materialMode && (
+          <div className="bg-surface border-2 border-accent/40 rounded-2xl shadow-lg shadow-accent/5 overflow-hidden">
+            <div className="p-6 space-y-4">
+              <div className="flex items-center gap-3 mb-2">
+                <FileText size={20} className="text-accent2" />
+                <div>
+                  <h3 className="font-bold text-white text-sm">Especificações Técnicas</h3>
+                  <p className="text-[10px] text-muted uppercase tracking-wider">Normas NBR / ASTM / ISO aplicáveis</p>
+                </div>
+              </div>
+              <textarea
+                rows={4}
+                value={data.especificacoes || ''}
+                onChange={e => update('especificacoes', e.target.value)}
+                placeholder="Ex.: Geomembrana PEAD 2,00 mm lisa, conforme NBR 13935 / ASTM D4397, normas de fabricação ISO 9001..."
+                className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-accent transition-all h-28 resize-none"
+              />
             </div>
           </div>
+        )}
 
-          {data.showGarantias !== false && (
-            <div className="p-6 pt-2 border-t border-border/50 bg-black/10 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input label="Garantia Fabricação" value={data.garantiaFabrica || '5'} onChange={e => update('garantiaFabrica', e.target.value)} suffix="anos" />
-              <Input label="Garantia Instalação" value={data.garantiaInstalacao || '1'} onChange={e => update('garantiaInstalacao', e.target.value)} suffix="ano" />
-            </div>
-          )}
-        </div>
-
-        {/* SEÇÃO: IMPOSTOS */}
-        <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showImpostos !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
-          <div 
-            className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
-            onClick={() => update('showImpostos', data.showImpostos === false)}
-          >
-            <div className="flex items-center gap-3">
-              <input 
-                type="checkbox" 
-                checked={data.showImpostos !== false} 
-                readOnly
-                className="w-5 h-5 rounded border-border text-accent focus:ring-accent bg-bg"
+        {/* SEÇÃO: GARANTIA DO MATERIAL (apenas material) */}
+        {materialMode && (
+          <div className="bg-surface border-2 border-accent/40 rounded-2xl shadow-lg shadow-accent/5 overflow-hidden">
+            <div className="p-6 space-y-4">
+              <div className="flex items-center gap-3 mb-2">
+                <Shield size={20} className="text-accent2" />
+                <div>
+                  <h3 className="font-bold text-white text-sm">Garantia do Material</h3>
+                  <p className="text-[10px] text-muted uppercase tracking-wider">Prazo e cobertura</p>
+                </div>
+              </div>
+              <textarea
+                rows={2}
+                value={data.garantiaMaterial || '12 meses contra defeitos de fabricação, mediante condições normais de uso e instalação conforme especificação técnica.'}
+                onChange={e => update('garantiaMaterial', e.target.value)}
+                className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-accent transition-all h-24 resize-none"
               />
-              <div>
-                <h3 className="font-bold text-white text-sm">Quadro de Impostos</h3>
-                <p className="text-[10px] text-muted uppercase tracking-wider">Alíquotas Federais e Estaduais</p>
+            </div>
+          </div>
+        )}
+
+        {/* SEÇÃO: GARANTIAS (serviço) */}
+        {!materialMode && (
+          <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showGarantias !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
+            <div
+              className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+              onClick={() => update('showGarantias', data.showGarantias === false)}
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={data.showGarantias !== false}
+                  readOnly
+                  className="w-5 h-5 rounded border-border text-accent focus:ring-accent bg-bg"
+                />
+                <div>
+                  <h3 className="font-bold text-white text-sm">Garantias</h3>
+                  <p className="text-[10px] text-muted uppercase tracking-wider">Prazos contra defeitos e acidentes</p>
+                </div>
+              </div>
+              <div className={`transition-transform duration-300 ${data.showGarantias !== false ? 'rotate-90' : ''}`}>
+                <ChevronRight size={18} className="text-muted" />
               </div>
             </div>
-            <div className={`transition-transform duration-300 ${data.showImpostos !== false ? 'rotate-90' : ''}`}>
-              <ChevronRight size={18} className="text-muted" />
-            </div>
+
+            {data.showGarantias !== false && (
+              <div className="p-6 pt-2 border-t border-border/50 bg-black/10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input label="Garantia Fabricação" value={data.garantiaFabrica || '5'} onChange={e => update('garantiaFabrica', e.target.value)} suffix="anos" />
+                <Input label="Garantia Instalação" value={data.garantiaInstalacao || '1'} onChange={e => update('garantiaInstalacao', e.target.value)} suffix="ano" />
+              </div>
+            )}
           </div>
+        )}
 
-          {data.showImpostos !== false && (
-            <div className="p-6 pt-2 border-t border-border/50 bg-black/10 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Input label="DAS Federal" value={data.impostoDAS || '11,20'} onChange={e => update('impostoDAS', e.target.value)} suffix="%" />
-              <Input label="ISS" value={data.impostoISS || '2,79'} onChange={e => update('impostoISS', e.target.value)} suffix="%" />
-              <Input label="IPI" value={data.impostoIPI || '15,00'} onChange={e => update('impostoIPI', e.target.value)} suffix="%" />
-              <Input label="DIFAL" value={data.impostoDIFAL || '6,00'} onChange={e => update('impostoDIFAL', e.target.value)} suffix="%" />
-            </div>
-          )}
-        </div>
-
-        {/* SEÇÃO: MULTAS */}
-        <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showMultas !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
-          <div 
-            className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
-            onClick={() => update('showMultas', data.showMultas === false)}
-          >
-            <div className="flex items-center gap-3">
-              <input 
-                type="checkbox" 
-                checked={data.showMultas !== false} 
-                readOnly
-                className="w-5 h-5 rounded border-border text-accent focus:ring-accent bg-bg"
-              />
-              <div>
-                <h3 className="font-bold text-white text-sm">Multa Contratual</h3>
-                <p className="text-[10px] text-muted uppercase tracking-wider">Atraso na execução</p>
+        {/* SEÇÃO: IMPOSTOS (apenas serviço) */}
+        {!materialMode && (
+          <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showImpostos !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
+            <div
+              className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+              onClick={() => update('showImpostos', data.showImpostos === false)}
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={data.showImpostos !== false}
+                  readOnly
+                  className="w-5 h-5 rounded border-border text-accent focus:ring-accent bg-bg"
+                />
+                <div>
+                  <h3 className="font-bold text-white text-sm">Quadro de Impostos</h3>
+                  <p className="text-[10px] text-muted uppercase tracking-wider">Alíquotas Federais e Estaduais</p>
+                </div>
+              </div>
+              <div className={`transition-transform duration-300 ${data.showImpostos !== false ? 'rotate-90' : ''}`}>
+                <ChevronRight size={18} className="text-muted" />
               </div>
             </div>
-            <div className={`transition-transform duration-300 ${data.showMultas !== false ? 'rotate-90' : ''}`}>
-              <ChevronRight size={18} className="text-muted" />
-            </div>
-          </div>
 
-          {data.showMultas !== false && (
-            <div className="p-6 pt-2 border-t border-border/50 bg-black/10 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input label="Multa Diária" value={data.multaDiaria || '0,3'} onChange={e => update('multaDiaria', e.target.value)} suffix="%" />
-              <Input label="Limite Máximo" value={data.multaLimite || '10'} onChange={e => update('multaLimite', e.target.value)} suffix="%" />
+            {data.showImpostos !== false && (
+              <div className="p-6 pt-2 border-t border-border/50 bg-black/10 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Input label="DAS Federal" value={data.impostoDAS || '11,20'} onChange={e => update('impostoDAS', e.target.value)} suffix="%" />
+                <Input label="ISS" value={data.impostoISS || '2,79'} onChange={e => update('impostoISS', e.target.value)} suffix="%" />
+                <Input label="IPI" value={data.impostoIPI || '15,00'} onChange={e => update('impostoIPI', e.target.value)} suffix="%" />
+                <Input label="DIFAL" value={data.impostoDIFAL || '6,00'} onChange={e => update('impostoDIFAL', e.target.value)} suffix="%" />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* SEÇÃO: MULTAS (apenas serviço) */}
+        {!materialMode && (
+          <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showMultas !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
+            <div
+              className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+              onClick={() => update('showMultas', data.showMultas === false)}
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={data.showMultas !== false}
+                  readOnly
+                  className="w-5 h-5 rounded border-border text-accent focus:ring-accent bg-bg"
+                />
+                <div>
+                  <h3 className="font-bold text-white text-sm">Multa Contratual</h3>
+                  <p className="text-[10px] text-muted uppercase tracking-wider">Atraso na execução</p>
+                </div>
+              </div>
+              <div className={`transition-transform duration-300 ${data.showMultas !== false ? 'rotate-90' : ''}`}>
+                <ChevronRight size={18} className="text-muted" />
+              </div>
             </div>
-          )}
-        </div>
+
+            {data.showMultas !== false && (
+              <div className="p-6 pt-2 border-t border-border/50 bg-black/10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input label="Multa Diária" value={data.multaDiaria || '0,3'} onChange={e => update('multaDiaria', e.target.value)} suffix="%" />
+                <Input label="Limite Máximo" value={data.multaLimite || '10'} onChange={e => update('multaLimite', e.target.value)} suffix="%" />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* SEÇÃO: VALIDADE DA PROPOSTA */}
         <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showValidade !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
@@ -344,35 +443,37 @@ const StepCondicoes = ({ data, onChange, onNext, onBack }) => {
           )}
         </div>
 
-        {/* SEÇÃO: PRAZO DE EXECUÇÃO */}
-        <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showPrazoExec !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
-          <div
-            className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
-            onClick={() => update('showPrazoExec', data.showPrazoExec === false)}
-          >
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                checked={data.showPrazoExec !== false}
-                readOnly
-                className="w-5 h-5 rounded border-border text-accent focus:ring-accent bg-bg"
-              />
-              <div>
-                <h3 className="font-bold text-white text-sm">Prazo de Execução</h3>
-                <p className="text-[10px] text-muted uppercase tracking-wider">Estimativa de entrega da obra</p>
+        {/* SEÇÃO: PRAZO DE EXECUÇÃO (apenas serviço) */}
+        {!materialMode && (
+          <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showPrazoExec !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
+            <div
+              className="p-4 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+              onClick={() => update('showPrazoExec', data.showPrazoExec === false)}
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={data.showPrazoExec !== false}
+                  readOnly
+                  className="w-5 h-5 rounded border-border text-accent focus:ring-accent bg-bg"
+                />
+                <div>
+                  <h3 className="font-bold text-white text-sm">Prazo de Execução</h3>
+                  <p className="text-[10px] text-muted uppercase tracking-wider">Estimativa de entrega da obra</p>
+                </div>
+              </div>
+              <div className={`transition-transform duration-300 ${data.showPrazoExec !== false ? 'rotate-90' : ''}`}>
+                <ChevronRight size={18} className="text-muted" />
               </div>
             </div>
-            <div className={`transition-transform duration-300 ${data.showPrazoExec !== false ? 'rotate-90' : ''}`}>
-              <ChevronRight size={18} className="text-muted" />
-            </div>
-          </div>
 
-          {data.showPrazoExec !== false && (
-            <div className="p-6 pt-2 border-t border-border/50 bg-black/10">
-              <Input label="Prazo de Execução" value={data.prazoExec} onChange={e => update('prazoExec', e.target.value)} placeholder="Ex.: 30 dias úteis" />
-            </div>
-          )}
-        </div>
+            {data.showPrazoExec !== false && (
+              <div className="p-6 pt-2 border-t border-border/50 bg-black/10">
+                <Input label="Prazo de Execução" value={data.prazoExec} onChange={e => update('prazoExec', e.target.value)} placeholder="Ex.: 30 dias úteis" />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* SEÇÃO: OBSERVAÇÕES GERAIS */}
         <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showObs !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>

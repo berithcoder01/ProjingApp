@@ -9,6 +9,7 @@ import { AuthProvider } from './shared/context/AuthContext';
 import Layout from './shared/Layout';
 import Dashboard from './features/dashboard/Dashboard';
 import ProposalWizard from './features/proposal/components/ProposalWizard';
+import MaterialWizard from './features/proposal/components/MaterialWizard';
 import ArmazemWizard from './features/proposal/components/ArmazemWizard';
 import SelectProposalType from './features/proposal/SelectProposalType';
 
@@ -18,15 +19,17 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          
+
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Layout />}>
               <Route index element={<Dashboard />} />
               <Route path="propostas" element={<ProposalsList />} />
               <Route path="propostas/nova" element={<SelectProposalType />} />
               <Route path="propostas/nova/geral" element={<ProposalWizard />} />
+              <Route path="propostas/nova/material" element={<MaterialWizard />} />
               <Route path="propostas/nova/armazem" element={<ArmazemWizard />} />
               <Route path="propostas/editar/geral/:id" element={<ProposalWizard />} />
+              <Route path="propostas/editar/material/:id" element={<MaterialWizard />} />
               <Route path="propostas/editar/armazem/:id" element={<ArmazemWizard />} />
               <Route path="clientes" element={<ClientsList />} />
               <Route path="configuracoes" element={<Settings />} />

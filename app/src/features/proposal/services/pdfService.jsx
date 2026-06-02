@@ -11,6 +11,7 @@
 
 import { pdf } from '@react-pdf/renderer';
 import ProposalDocumentPDF from '../components/ProposalDocumentPDF';
+import MaterialDocumentPDF from '../components/MaterialDocumentPDF';
 import ArmazemDocumentPDF from '../components/ArmazemDocumentPDF';
 import logoProjingUrl from '../../../../logo.svg';
 
@@ -121,6 +122,43 @@ export const generateProposalPDF = async ({ propNum, cliente, items, cond, compa
     return true;
   } catch (error) {
     console.error('[pdfService] Erro ao gerar PDF (geral):', error);
+    alert('Erro ao gerar PDF: ' + error.message);
+    return false;
+  }
+};
+
+/**
+ * Gera o PDF de uma proposta de fornecimento de materiais e dispara download/compartilhamento.
+ *
+ * @param {Object} params
+ * @param {string} params.propNum         - Número da proposta
+ * @param {Object} params.cliente         - Dados do cliente
+ * @param {Array}  params.items           - Itens / materiais da proposta
+ * @param {Object} params.cond            - Condições (entrega, pagamento, garantia, etc.)
+ * @param {Object} [params.companySettings] - Configurações da empresa
+ * @returns {Promise<boolean>} true em caso de sucesso, false em caso de erro
+ */
+export const generateMaterialPDF = async ({ propNum, cliente, items, cond, companySettings }) => {
+  try {
+    if (!propNum || !cliente || !Array.isArray(items)) {
+      throw new Error('Dados incompletos para gerar o PDF.');
+    }
+    const logoSrc = await getLogoPngDataUri();
+    const doc = (
+      <MaterialDocumentPDF
+        cliente={cliente}
+        items={items}
+        cond={cond || {}}
+        propNum={propNum}
+        companySettings={companySettings}
+        logoSrc={logoSrc}
+      />
+    );
+    const blob = await pdf(doc).toBlob();
+    await shareOrDownload(blob, sanitizeFilename(propNum));
+    return true;
+  } catch (error) {
+    console.error('[pdfService] Erro ao gerar PDF (material):', error);
     alert('Erro ao gerar PDF: ' + error.message);
     return false;
   }

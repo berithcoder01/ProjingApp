@@ -167,8 +167,12 @@ const ProposalsList = () => {
               <tbody className="divide-y divide-border/50">
                 {filtered.map(p => {
                   const isThisGenerating = generatingId === p.id;
-                  const isArmazem = p.metadata?.tipo === 'armazem';
-                  const editPath = isArmazem ? `/propostas/editar/armazem/${p.id}` : `/propostas/editar/geral/${p.id}`;
+                  const tipo = p.metadata?.tipo;
+                  const editPath = tipo === 'armazem'
+                    ? `/propostas/editar/armazem/${p.id}`
+                    : tipo === 'material'
+                      ? `/propostas/editar/material/${p.id}`
+                      : `/propostas/editar/geral/${p.id}`;
 
                   return (
                     <tr key={p.id} className="hover:bg-white/5 transition-colors group">

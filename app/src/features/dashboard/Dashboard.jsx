@@ -156,8 +156,12 @@ const Dashboard = () => {
                     <td className="py-4 text-center">
                       <button
                         onClick={() => {
-                          const isArmazem = p.metadata?.tipo === 'armazem';
-                          const path = isArmazem ? `/propostas/editar/armazem/${p.id}` : `/propostas/editar/geral/${p.id}`;
+                          const tipo = p.metadata?.tipo;
+                          const path = tipo === 'armazem'
+                            ? `/propostas/editar/armazem/${p.id}`
+                            : tipo === 'material'
+                              ? `/propostas/editar/material/${p.id}`
+                              : `/propostas/editar/geral/${p.id}`;
                           navigate(path);
                         }}
                         className="p-2 rounded-lg border-2 border-border bg-bg text-muted hover:border-accent hover:text-white transition-all"

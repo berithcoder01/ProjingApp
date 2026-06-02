@@ -63,17 +63,18 @@ model ProposalItem {
 }
 
 model CommercialConditions {
-  id              String   @id @default(uuid())
-  proposalId      String   @unique
-  downPayment     Float
-  downPaymentDays Int
-  measurementDays Int
-  paymentNfDays   Int
-  validityDays    Int
-  executionPeriod String?
-  paymentTerms    String?
-  observations    String?
-  proposal        Proposal @relation(fields: [proposalId], references: [id])
+  id                String   @id @default(uuid())
+  proposalId        String   @unique
+  downPayment       Float
+  downPaymentDays   Int
+  downPaymentOnStart Boolean @default(false)
+  measurementDays   Int
+  paymentNfDays     Int
+  validityDays      Int
+  executionPeriod   String?
+  paymentTerms      String?
+  observations      String?
+  proposal          Proposal @relation(fields: [proposalId], references: [id])
 }
 
 model CompanySettings {

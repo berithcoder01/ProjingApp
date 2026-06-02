@@ -6,7 +6,7 @@ import Button from '../../../shared/Button';
 import Input from '../../../shared/Input';
 import { calcularGeomembrana, ESPESSURAS_DISPONIVEIS } from '../services/geomembraneCalculator';
 
-const StepServicos = ({ items, onChange, tipoProposta, onTipoChange, onNext, onBack, companySettings }) => {
+const StepServicos = ({ items, onChange, tipoProposta, onTipoChange, onNext, onBack, companySettings, materialMode = false }) => {
 
   const addItem = () => {
     const newId = `ITEM.${String(items.length + 1).padStart(2, '0')}`;
@@ -67,24 +67,32 @@ const StepServicos = ({ items, onChange, tipoProposta, onTipoChange, onNext, onB
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-2xl font-extrabold font-syne mb-2">Escopo de Fornecimento</h2>
-          <p className="text-muted text-sm">Adicione os serviços e materiais que farão parte desta proposta comercial.</p>
+          <h2 className="text-2xl font-extrabold font-syne mb-2">
+            {materialMode ? 'Itens / Materiais' : 'Escopo de Fornecimento'}
+          </h2>
+          <p className="text-muted text-sm">
+            {materialMode
+              ? 'Adicione os materiais a serem fornecidos com quantidades, unidades e preços unitários.'
+              : 'Adicione os serviços e materiais que farão parte desta proposta comercial.'}
+          </p>
         </div>
 
-        <div className="bg-surface border-2 border-border p-2 rounded-xl flex gap-1">
-          <button
-            onClick={() => onTipoChange('valor_fechado')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${!isContinuous ? 'bg-accent text-white shadow-lg' : 'text-muted hover:text-white'}`}
-          >
-            Valor Fechado
-          </button>
-          <button
-            onClick={() => onTipoChange('servico_continuo')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${isContinuous ? 'bg-accent text-white shadow-lg' : 'text-muted hover:text-white'}`}
-          >
-            Serviço Contínuo
-          </button>
-        </div>
+        {!materialMode && (
+          <div className="bg-surface border-2 border-border p-2 rounded-xl flex gap-1">
+            <button
+              onClick={() => onTipoChange('valor_fechado')}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${!isContinuous ? 'bg-accent text-white shadow-lg' : 'text-muted hover:text-white'}`}
+            >
+              Valor Fechado
+            </button>
+            <button
+              onClick={() => onTipoChange('servico_continuo')}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${isContinuous ? 'bg-accent text-white shadow-lg' : 'text-muted hover:text-white'}`}
+            >
+              Serviço Contínuo
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ── Painel: Calculadora de Geomembrana ── */}
@@ -228,7 +236,7 @@ const StepServicos = ({ items, onChange, tipoProposta, onTipoChange, onNext, onB
               <div className="flex justify-between items-center p-4 border-b-2 border-border/50 bg-black/20">
                 <div className="text-sm font-bold text-white flex items-center gap-3">
                   <span className="text-accent2 font-syne text-lg">{index + 1}</span>
-                  Item do Escopo
+                  {materialMode ? 'Material' : 'Item do Escopo'}
                 </div>
                 <Button variant="ghost" className="text-danger hover:text-danger hover:bg-danger/10 px-3 py-1 flex items-center gap-2" onClick={() => removeItem(item.id)}>
                   <Trash2 size={16} /> Remover
@@ -291,13 +299,17 @@ const StepServicos = ({ items, onChange, tipoProposta, onTipoChange, onNext, onB
               <Plus size={24} className="text-accent" />
             </div>
             <p className="font-bold text-white mb-2">Nenhum item adicionado</p>
-            <p className="text-sm">Comece adicionando o primeiro serviço do seu escopo.</p>
+            <p className="text-sm">
+              {materialMode
+                ? 'Comece adicionando o primeiro material a ser fornecido.'
+                : 'Comece adicionando o primeiro serviço do seu escopo.'}
+            </p>
           </div>
         )}
-        
+
         <div className="pt-4 pb-6">
           <Button onClick={addItem} className="w-full border-dashed border-2 bg-transparent hover:bg-accent/10 border-accent/50 text-accent2 py-4 text-lg">
-            + Adicionar Item ao Escopo
+            + {materialMode ? 'Adicionar Material' : 'Adicionar Item ao Escopo'}
           </Button>
         </div>
       </div>
@@ -305,6 +317,11 @@ const StepServicos = ({ items, onChange, tipoProposta, onTipoChange, onNext, onB
       {/* Floating Total Summary */}
       <div className="sticky bottom-4 bg-surface/80 backdrop-blur-xl border-2 border-border p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl z-10">
         {!isContinuous ? (
+          <div className="text-center sm:text-left">
+            <div className="text-[10px] text-muted font-bold uppercase tracking-widest mb-1">Total Estimado</div>
+            <div className="text-3xl font-black font-syne text-gold">{fmt(total)}</div>
+          </div>
+        ) : materialMode ? (
           <div className="text-center sm:text-left">
             <div className="text-[10px] text-muted font-bold uppercase tracking-widest mb-1">Total Estimado</div>
             <div className="text-3xl font-black font-syne text-gold">{fmt(total)}</div>

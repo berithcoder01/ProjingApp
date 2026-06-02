@@ -1,9 +1,29 @@
 import { useEffect } from 'react';
-import { generateProposalPDF, generateArmazemPDF } from '../services/pdfService';
+import { generateProposalPDF, generateArmazemPDF, generateMaterialPDF } from '../services/pdfService';
+
+const splitObservations = (raw) => {
+  if (!raw) return { obsPagamento: '', obs: '' };
+  const marker = '[PAGAMENTO] ';
+  if (raw.startsWith(marker)) {
+    const rest = raw.slice(marker.length);
+    const sep = rest.indexOf('\n\n');
+    if (sep === -1) return { obsPagamento: rest.trim(), obs: '' };
+    return { obsPagamento: rest.slice(0, sep).trim(), obs: rest.slice(sep + 2).trim() };
+  }
+  return { obsPagamento: '', obs: raw };
+};
+
+const VALID_PAYMENT_METHODS = ['depósito bancário', 'transferência bancária', 'boleto', 'PIX'];
+
+const isLegacyPaymentTerm = (term) => {
+  if (!term) return false;
+  if (VALID_PAYMENT_METHODS.includes(term)) return false;
+  return term.length > 30;
+};
 
 /**
  * Componente "controlador" de geração de PDF para propostas vindas do banco.
- * Recebe a `proposal` completa, identifica o tipo (geral ou armazém),
+ * Recebe a `proposal` completa, identifica o tipo (geral, material ou armazém),
  * dispara a geração e chama `onDone` ao terminar.
  *
  * Não há mais DOM oculto nem ref — o PDF é gerado nativamente via @react-pdf/renderer.
@@ -16,6 +36,7 @@ const PdfGenerator = ({ proposal, companySettings, onDone }) => {
     const run = async () => {
       const meta = proposal.metadata || {};
       const isArmazem = meta.tipo === 'armazem';
+      const isMaterial = meta.tipo === 'material';
 
       try {
         if (isArmazem) {
@@ -74,6 +95,56 @@ const PdfGenerator = ({ proposal, companySettings, onDone }) => {
             },
           };
           await generateArmazemPDF({ propNum: proposal.number, data, companySettings });
+        } else if (isMaterial) {
+          const cliente = {
+            nome: proposal.clientName,
+            contato: proposal.clientContact || '',
+            cargo: proposal.clientRole || '',
+            local: proposal.location || '',
+            tel: proposal.phone || '',
+            objeto: proposal.object || '',
+          };
+          const items = (proposal.items || []).map((it) => ({
+            id: it.id,
+            label: it.label,
+            unit: it.unit,
+            qty: it.quantity,
+            price: it.unitPrice,
+            description: it.description || '',
+          }));
+          const rawCond = proposal.conditions?.[0] || {};
+          const legacyTerm = rawCond.paymentTerms || '';
+          const migratedFromTerm = isLegacyPaymentTerm(legacyTerm) ? legacyTerm : '';
+          const formaPagamentoFinal = isLegacyPaymentTerm(legacyTerm) ? '' : legacyTerm;
+          const { obsPagamento, obs } = splitObservations(rawCond.observations || '');
+          const materialMeta = meta.material || {};
+          const cond = {
+            entrada: rawCond.downPayment,
+            prazoEntrada: rawCond.downPaymentDays,
+            tipoPrazoEntrada: rawCond.downPaymentOnStart ? 'inicio' : 'dias',
+            medicao: rawCond.measurementDays,
+            prazoNF: rawCond.paymentNfDays,
+            validade: rawCond.validadeDays,
+            prazoExec: rawCond.executionPeriod,
+            formaPagamento: formaPagamentoFinal,
+            obsPagamento: obsPagamento || migratedFromTerm,
+            obs: obs,
+            showPagamento: meta.showPagamento !== false,
+            showEntrada: meta.showEntrada !== false,
+            showMedicao: meta.showMedicao !== false,
+            showNF: meta.showNF !== false,
+            showFormaPagamento: meta.showFormaPagamento !== false,
+            showObsPagamento: meta.showObsPagamento !== false,
+            showValidade: meta.showValidade !== false,
+            showObs: meta.showObs !== false,
+            prazoEntrega: materialMeta.prazoEntrega || meta.prazoEntrega || '',
+            localEntrega: materialMeta.localEntrega || meta.localEntrega || '',
+            tipoFrete: materialMeta.tipoFrete || meta.tipoFrete || 'CIF',
+            especificacoes: materialMeta.especificacoes || meta.especificacoes || '',
+            garantiaMaterial: materialMeta.garantiaMaterial || meta.garantiaMaterial || '',
+            tipoProposta: 'valor_fechado',
+          };
+          await generateMaterialPDF({ propNum: proposal.number, cliente, items, cond, companySettings });
         } else {
           const cliente = {
             nome: proposal.clientName,

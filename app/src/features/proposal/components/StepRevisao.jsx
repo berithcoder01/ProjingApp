@@ -3,14 +3,18 @@ import { ArrowLeft, Download, Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Button from '../../../shared/Button';
 import ProposalDocument from './ProposalDocument';
-import { generateProposalPDF } from '../services/pdfService';
+import MaterialDocument from './MaterialDocument';
+import { generateProposalPDF, generateMaterialPDF } from '../services/pdfService';
 
-const StepRevisao = ({ cliente, items, cond, propNum, companySettings, onBack, onGenerate }) => {
+const StepRevisao = ({ cliente, items, cond, propNum, companySettings, onBack, onGenerate, tipo = 'geral' }) => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const isMaterial = tipo === 'material';
 
   const handleGenerate = async () => {
     setIsGenerating(true);
-    const ok = await generateProposalPDF({ propNum, cliente, items, cond, companySettings });
+    const ok = isMaterial
+      ? await generateMaterialPDF({ propNum, cliente, items, cond, companySettings })
+      : await generateProposalPDF({ propNum, cliente, items, cond, companySettings });
     setIsGenerating(false);
     if (ok) onGenerate();
   };
@@ -44,13 +48,23 @@ const StepRevisao = ({ cliente, items, cond, propNum, companySettings, onBack, o
           style={{ maxHeight: '70vh' }}
         >
           <div style={{ transform: 'scale(0.82)', transformOrigin: 'top center' }}>
-            <ProposalDocument
-              cliente={cliente}
-              items={items}
-              cond={cond}
-              propNum={propNum}
-              companySettings={companySettings}
-            />
+            {isMaterial ? (
+              <MaterialDocument
+                cliente={cliente}
+                items={items}
+                cond={cond}
+                propNum={propNum}
+                companySettings={companySettings}
+              />
+            ) : (
+              <ProposalDocument
+                cliente={cliente}
+                items={items}
+                cond={cond}
+                propNum={propNum}
+                companySettings={companySettings}
+              />
+            )}
           </div>
         </div>
       </div>
