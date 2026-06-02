@@ -1,0 +1,9 @@
+{
+  "appId": "pro.projing.orcaai",
+  "appName": "PROJINGPRO",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "allowNavigation": ["*.vercel.app", "orcaai.vercel.app"]
+  }
+}

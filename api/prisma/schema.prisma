@@ -1,0 +1,105 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Proposal {
+  id            String                @id @default(uuid())
+  number        String                @unique
+  clientName    String
+  clientContact String
+  clientRole    String?
+  location      String
+  phone         String?
+  object        String?
+  total         Float
+  clientId      String?
+  title         String?
+  metadata      Json?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  status        ProposalStatus        @default(DRAFT)
+  conditions    CommercialConditions?
+  client        Client?               @relation(fields: [clientId], references: [id])
+  items         ProposalItem[]
+}
+
+model Client {
+  id        String     @id @default(uuid())
+  name      String
+  contact   String
+  role      String?
+  location  String
+  phone     String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  proposals Proposal[]
+}
+
+model ProposalItem {
+  id         String   @id @default(uuid())
+  proposalId String
+  catalogId  String
+  label      String
+  unit       String
+  quantity   Float
+  unitPrice  Float
+  subtotal   Float
+  proposal   Proposal @relation(fields: [proposalId], references: [id])
+}
+
+model CommercialConditions {
+  id              String   @id @default(uuid())
+  proposalId      String   @unique
+  downPayment     Float
+  downPaymentDays Int
+  measurementDays Int
+  paymentNfDays   Int
+  validityDays    Int
+  executionPeriod String?
+  paymentTerms    String?
+  observations    String?
+  proposal        Proposal @relation(fields: [proposalId], references: [id])
+}
+
+model CompanySettings {
+  id                    String   @id @default(uuid())
+  companyName           String   @default("PROJING")
+  cnpj                  String   @default("54.348.703/0001-34")
+  phone                 String   @default("(44) 9 9813-9141")
+  email                 String   @default("projingehbengenharia@hotmail.com")
+  website               String   @default("www.projing.pro")
+  address               String   @default("Rua João Hungari, 575, Marialva PR, CEP 86990-000")
+  primaryColor          String   @default("#1A5276")
+  defaultEntrada        String   @default("20")
+  defaultPrazoEntrada   String   @default("45")
+  defaultMedicao        String   @default("10")
+  defaultPrazoNF        String   @default("60")
+  defaultValidade       String   @default("60")
+  defaultFormaPagamento String   @default("depósito bancário")
+  geomembranePrices     Json?
+  materialSafetyMargin  Float    @default(1.15)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+enum ProposalStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+}

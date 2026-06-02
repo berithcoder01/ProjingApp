@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PROJINGPRO</string>
+    <string name="title_activity_main">PROJINGPRO</string>
+    <string name="package_name">pro.projing.orcaai</string>
+    <string name="custom_url_scheme">pro.projing.orcaai</string>
+</resources>
