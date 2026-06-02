@@ -58,6 +58,7 @@ const ProposalWizard = () => {
   const [cond, setCond] = useState({
     entrada: "20",
     prazoEntrada: "45",
+    tipoPrazoEntrada: "dias",
     medicao: "10",
     prazoNF: "60",
     validade: "60",
@@ -124,6 +125,7 @@ const ProposalWizard = () => {
             setCond({
               entrada: String(c.downPayment || ""),
               prazoEntrada: String(c.downPaymentDays || ""),
+              tipoPrazoEntrada: c.downPaymentOnStart ? "inicio" : "dias",
               medicao: String(c.measurementDays || ""),
               prazoNF: String(c.paymentNfDays || ""),
               validade: String(c.validadeDays || ""),
@@ -147,6 +149,7 @@ const ProposalWizard = () => {
     try {
       const condToSave = {
         ...cond,
+        downPaymentOnStart: cond.tipoPrazoEntrada === 'inicio',
         obs: combineObservations(cond.obsPagamento, cond.obs)
       };
       if (id) {
@@ -168,6 +171,7 @@ const ProposalWizard = () => {
     setCond({
       entrada: companySettings?.defaultEntrada || "20",
       prazoEntrada: companySettings?.defaultPrazoEntrada || "45",
+      tipoPrazoEntrada: "dias",
       medicao: companySettings?.defaultMedicao || "10",
       prazoNF: companySettings?.defaultPrazoNF || "60",
       validade: companySettings?.defaultValidade || "60",

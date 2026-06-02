@@ -61,24 +61,62 @@ const Step8Condicoes = ({ data, updateData }) => {
             </label>
 
             {showEntrada && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-8">
-                <div>
-                  <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2 ml-1">Percentual (%)</label>
-                  <input
-                    type="number"
-                    value={percentualEntrada}
-                    onChange={(e) => updateData('percentualEntrada', e.target.value)}
-                    className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-accent"
-                  />
+              <div className="pl-8 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2 ml-1">Percentual (%)</label>
+                    <input
+                      type="number"
+                      value={percentualEntrada}
+                      onChange={(e) => updateData('percentualEntrada', e.target.value)}
+                      className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-accent"
+                    />
+                  </div>
+                  {data.tipoPrazoEntrada === 'inicio' ? (
+                    <div>
+                      <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2 ml-1">Prazo da Entrada</label>
+                      <div className="w-full bg-accent/10 border-2 border-accent rounded-xl px-4 py-3 text-accent font-bold">
+                        Pagamento no início da obra
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2 ml-1">Prazo (Dias)</label>
+                      <input
+                        type="number"
+                        value={prazoEntrada}
+                        onChange={(e) => updateData('prazoEntrada', e.target.value)}
+                        className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-accent"
+                      />
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-[10px] font-bold text-muted uppercase tracking-widest mb-2 ml-1">Prazo (Dias)</label>
-                  <input
-                    type="number"
-                    value={prazoEntrada}
-                    onChange={(e) => updateData('prazoEntrada', e.target.value)}
-                    className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-accent"
-                  />
+                <div className="flex flex-col gap-2">
+                  <label className="block text-[10px] font-bold text-muted uppercase tracking-widest ml-1">Momento do Pagamento</label>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <label className="flex items-center gap-2 cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="tipoPrazoEntrada"
+                        value="dias"
+                        checked={data.tipoPrazoEntrada !== 'inicio'}
+                        onChange={() => updateData('tipoPrazoEntrada', 'dias')}
+                        className="w-4 h-4 accent-accent2"
+                      />
+                      <span className="text-sm text-white group-hover:text-accent2 transition-colors">Em dias após assinatura</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="tipoPrazoEntrada"
+                        value="inicio"
+                        checked={data.tipoPrazoEntrada === 'inicio'}
+                        onChange={() => updateData('tipoPrazoEntrada', 'inicio')}
+                        className="w-4 h-4 accent-accent2"
+                      />
+                      <span className="text-sm text-white group-hover:text-accent2 transition-colors">No início da obra</span>
+                    </label>
+                  </div>
                 </div>
               </div>
             )}

@@ -80,6 +80,7 @@ const ArmazemWizard = () => {
               showEntrada: m.condicoesPagamento?.showEntrada,
               percentualEntrada: m.condicoesPagamento?.entrada,
               prazoEntrada: m.condicoesPagamento?.prazoEntrada,
+              tipoPrazoEntrada: m.condicoesPagamento?.entradaNoInicio ? 'inicio' : 'dias',
               showMaterial: m.condicoesPagamento?.showMaterial,
               percentualMaterial: m.condicoesPagamento?.material,
               prazoMaterial: m.condicoesPagamento?.prazoMaterial,

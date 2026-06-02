@@ -72,6 +72,7 @@ const Step10Documento = ({ data, companySettings }) => {
             showEntrada: data.showEntrada !== false,
             entrada: data.percentualEntrada,
             prazoEntrada: data.prazoEntrada,
+            entradaNoInicio: data.tipoPrazoEntrada === 'inicio',
             showMaterial: data.showMaterial !== false,
             material: data.percentualMaterial,
             prazoMaterial: data.prazoMaterial,

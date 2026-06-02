@@ -47,6 +47,7 @@ const PdfGenerator = ({ proposal, companySettings, onDone }) => {
             showEntrada: meta.condicoesPagamento?.showEntrada !== false,
             percentualEntrada: meta.condicoesPagamento?.entrada || '15',
             prazoEntrada: meta.condicoesPagamento?.prazoEntrada || '28',
+            tipoPrazoEntrada: meta.condicoesPagamento?.entradaNoInicio ? 'inicio' : 'dias',
             showMaterial: meta.condicoesPagamento?.showMaterial !== false,
             percentualMaterial: meta.condicoesPagamento?.material || '40',
             prazoMaterial: meta.condicoesPagamento?.prazoMaterial || '28',

@@ -137,7 +137,9 @@ const ProposalDocument = React.forwardRef(({ cliente, items, cond, propNum, comp
             {cond.showEntrada !== false && (cond.entrada || cond.prazoEntrada) && (
               <li style={liStyle}>
                 {cond.entrada ? `${cond.entrada}% de entrada (mobilização)` : 'Entrada (mobilização)'}
-                {cond.prazoEntrada ? `: pagamento em ${cond.prazoEntrada} dias.` : '.'}
+                {cond.tipoPrazoEntrada === 'inicio'
+                  ? ': pagamento no início da obra.'
+                  : (cond.prazoEntrada ? `: pagamento em ${cond.prazoEntrada} dias.` : '.')}
               </li>
             )}
 
@@ -251,12 +253,37 @@ const ProposalDocument = React.forwardRef(({ cliente, items, cond, propNum, comp
           <div style={{ fontSize: '10pt', fontStyle: 'italic', color: mutedColor }}>Somos gratos por participarmos deste projeto.</div>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: '1px solid #ccc' }}>
-          <div style={{ fontSize: '14pt', fontWeight: 'bold', color: '#E67E22', marginBottom: '5px' }}>PROJING — 15 ANOS DE EXPERIÊNCIA</div>
-          <p style={{ fontSize: '9pt', color: mutedColor, margin: 0 }}>
-            Atuamos desenvolvendo soluções inovadoras para o setor de armazenagem de grãos.<br />
-            Desenvolvemos tecnologia para evitar impregnação de grãos em rampas, aplicada em silos, armazéns e moegas.
+        <div style={{ marginTop: '40px', paddingTop: '20px', borderTop: '2px solid #E67E22' }}>
+          <div style={{ fontSize: '14pt', fontWeight: 'bold', color: '#E67E22', textAlign: 'center', marginBottom: '8px', letterSpacing: '1px' }}>
+            PROJING — 15 ANOS DE EXPERIÊNCIA
+          </div>
+          <p style={{ fontSize: '9pt', color: mutedColor, textAlign: 'center', fontStyle: 'italic', lineHeight: '1.5', maxWidth: '80%', margin: '0 auto 20px' }}>
+            Há mais de 15 anos atuamos com excelência no setor de infraestrutura industrial e ambiental, oferecendo soluções completas em geomembrana PEAD e tratamento de efluentes.
           </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+            <div style={{ padding: '14px 16px', backgroundColor: '#f8f9fa', borderRadius: '6px', borderLeft: '3px solid #1A5276' }}>
+              <div style={{ fontSize: '9pt', fontWeight: 'bold', color: '#1A5276', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', paddingBottom: '6px', borderBottom: '1px solid #E0E0E0' }}>
+                Revestimentos
+              </div>
+              <div style={{ fontSize: '10pt', color: '#333', lineHeight: '1.6' }}>
+                <div>• Reservatórios</div>
+                <div>• Silos</div>
+                <div>• Armazéns graneleiros</div>
+                <div>• Moegas</div>
+              </div>
+            </div>
+            <div style={{ padding: '14px 16px', backgroundColor: '#f8f9fa', borderRadius: '6px', borderLeft: '3px solid #1A5276' }}>
+              <div style={{ fontSize: '9pt', fontWeight: 'bold', color: '#1A5276', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', paddingBottom: '6px', borderBottom: '1px solid #E0E0E0' }}>
+                Infraestrutura &amp; Tratamento
+              </div>
+              <div style={{ fontSize: '10pt', color: '#333', lineHeight: '1.6' }}>
+                <div>• Tubulações em PEAD</div>
+                <div>• Tratamento de esgoto</div>
+                <div>• Tratamento de efluentes</div>
+                <div>• Águas industriais</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

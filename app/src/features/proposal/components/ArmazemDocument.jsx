@@ -178,7 +178,12 @@ const ArmazemDocument = React.forwardRef(({ data, companySettings }, ref) => {
         <SectionTitle title="CONDIÇÕES DE PAGAMENTO" color={primaryColor} />
         <ul style={{ listStyleType: 'disc', paddingLeft: '25px', marginBottom: '25px' }}>
           {showEntrada && (
-            <li style={liStyle}><strong>{percentualEntrada}%</strong> de entrada (mobilização): pagamento em {prazoEntrada} dias.</li>
+            <li style={liStyle}>
+              <strong>{percentualEntrada}%</strong> de entrada (mobilização):{' '}
+              {data.tipoPrazoEntrada === 'inicio'
+                ? 'pagamento no início da obra.'
+                : `pagamento em ${prazoEntrada} dias.`}
+            </li>
           )}
           {showMaterial && (
             <li style={liStyle}><strong>{percentualMaterial}%</strong> na entrega da Geomembrana no canteiro: pagamento em {prazoMaterial} dias.</li>
@@ -276,12 +281,37 @@ const ArmazemDocument = React.forwardRef(({ data, companySettings }, ref) => {
           <div style={{ fontSize: '11pt', fontStyle: 'italic', color: mutedColor }}>Somos gratos pela oportunidade de parceria neste projeto.</div>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: `1px solid ${borderColor}` }}>
-          <div style={{ fontSize: '15pt', fontWeight: 'bold', color: '#E67E22', marginBottom: '5px', letterSpacing: '1px' }}>PROJING — 15 ANOS DE EXPERIÊNCIA</div>
-          <p style={{ fontSize: '10pt', color: mutedColor, margin: 0, lineHeight: '1.4' }}>
-            Atuamos desenvolvendo soluções inovadoras para o setor de armazenagem de grãos.<br />
-            Desenvolvemos tecnologia para evitar impregnação de grãos em rampas, aplicada em silos, armazéns e moegas.
+        <div style={{ marginTop: '40px', paddingTop: '20px', borderTop: `2px solid #E67E22` }}>
+          <div style={{ fontSize: '15pt', fontWeight: 'bold', color: '#E67E22', textAlign: 'center', marginBottom: '8px', letterSpacing: '1.5px' }}>
+            PROJING — 15 ANOS DE EXPERIÊNCIA
+          </div>
+          <p style={{ fontSize: '10pt', color: mutedColor, textAlign: 'center', fontStyle: 'italic', lineHeight: '1.5', maxWidth: '80%', margin: '0 auto 20px' }}>
+            Há mais de 15 anos atuamos com excelência no setor de infraestrutura industrial e ambiental, oferecendo soluções completas em geomembrana PEAD e tratamento de efluentes.
           </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div style={{ padding: '14px 16px', backgroundColor: '#f8f9fa', borderRadius: '6px', borderLeft: `3px solid ${primaryColor}` }}>
+              <div style={{ fontSize: '10pt', fontWeight: 'bold', color: primaryColor, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', paddingBottom: '6px', borderBottom: '1px solid #E0E0E0' }}>
+                Revestimentos
+              </div>
+              <div style={{ fontSize: '10pt', color: '#333', lineHeight: '1.6' }}>
+                <div>• Reservatórios</div>
+                <div>• Silos</div>
+                <div>• Armazéns graneleiros</div>
+                <div>• Moegas</div>
+              </div>
+            </div>
+            <div style={{ padding: '14px 16px', backgroundColor: '#f8f9fa', borderRadius: '6px', borderLeft: `3px solid ${primaryColor}` }}>
+              <div style={{ fontSize: '10pt', fontWeight: 'bold', color: primaryColor, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px', paddingBottom: '6px', borderBottom: '1px solid #E0E0E0' }}>
+                Infraestrutura &amp; Tratamento
+              </div>
+              <div style={{ fontSize: '10pt', color: '#333', lineHeight: '1.6' }}>
+                <div>• Tubulações em PEAD</div>
+                <div>• Tratamento de esgoto</div>
+                <div>• Tratamento de efluentes</div>
+                <div>• Águas industriais</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -83,9 +83,47 @@ const StepCondicoes = ({ data, onChange, onNext, onBack }) => {
                   <span className="font-bold text-white group-hover:text-accent2 transition-colors">Entrada (Mobilização)</span>
                 </label>
                 {data.showEntrada !== false && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-8">
-                    <Input label="Entrada (%)" type="number" value={data.entrada} onChange={e => update('entrada', e.target.value)} suffix="%" />
-                    <Input label="Prazo Entrada" type="number" value={data.prazoEntrada} onChange={e => update('prazoEntrada', e.target.value)} suffix="dias" />
+                  <div className="pl-8 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Input label="Entrada (%)" type="number" value={data.entrada} onChange={e => update('entrada', e.target.value)} suffix="%" />
+                      {data.tipoPrazoEntrada === 'inicio' ? (
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1">Prazo da Entrada</label>
+                          <div className="w-full bg-accent/10 border-2 border-accent rounded-xl px-4 py-3 text-sm text-accent font-bold">
+                            Pagamento no início da obra
+                          </div>
+                        </div>
+                      ) : (
+                        <Input label="Prazo Entrada" type="number" value={data.prazoEntrada} onChange={e => update('prazoEntrada', e.target.value)} suffix="dias" />
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1">Momento do Pagamento</label>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <label className="flex items-center gap-2 cursor-pointer group">
+                          <input
+                            type="radio"
+                            name="tipoPrazoEntrada"
+                            value="dias"
+                            checked={data.tipoPrazoEntrada !== 'inicio'}
+                            onChange={() => update('tipoPrazoEntrada', 'dias')}
+                            className="w-4 h-4 accent-accent2"
+                          />
+                          <span className="text-sm text-white group-hover:text-accent2 transition-colors">Em dias após assinatura</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer group">
+                          <input
+                            type="radio"
+                            name="tipoPrazoEntrada"
+                            value="inicio"
+                            checked={data.tipoPrazoEntrada === 'inicio'}
+                            onChange={() => update('tipoPrazoEntrada', 'inicio')}
+                            className="w-4 h-4 accent-accent2"
+                          />
+                          <span className="text-sm text-white group-hover:text-accent2 transition-colors">No início da obra</span>
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

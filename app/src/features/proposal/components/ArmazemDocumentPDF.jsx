@@ -1,4 +1,5 @@
 import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
+import { PhoneIcon, MailIcon, GlobeIcon, HashIcon, MapPinIcon } from './PDFIcons';
 import { fmt } from '../constants';
 
 const M = (mm) => mm * 2.83465;
@@ -267,21 +268,61 @@ const styles = StyleSheet.create({
   signThanks: { fontSize: 11, fontStyle: 'italic', color: COLORS.muted },
 
   footer: {
-    textAlign: 'center',
     marginTop: M(20),
-    paddingTop: M(8),
-    borderTopWidth: 1,
-    borderTopColor: COLORS.border,
+    paddingTop: M(10),
+    borderTopWidth: 2,
+    borderTopColor: COLORS.orange,
     borderTopStyle: 'solid',
   },
   footerBrand: {
     fontSize: 14,
     fontWeight: 'bold',
     color: COLORS.orange,
-    marginBottom: 2,
+    textAlign: 'center',
+    marginBottom: M(3),
     letterSpacing: 1,
   },
-  footerText: { fontSize: 10, color: COLORS.muted, margin: 0, lineHeight: 1.4 },
+  footerIntro: {
+    fontSize: 9,
+    color: COLORS.muted,
+    textAlign: 'center',
+    fontStyle: 'italic',
+    marginBottom: M(8),
+    lineHeight: 1.5,
+    paddingHorizontal: M(20),
+  },
+  footerColumns: {
+    flexDirection: 'row',
+    gap: M(8),
+  },
+  footerColumn: {
+    flex: 1,
+    paddingVertical: M(5),
+    paddingHorizontal: M(5),
+    backgroundColor: COLORS.badge,
+    borderLeftWidth: 3,
+    borderLeftStyle: 'solid',
+    borderLeftColor: COLORS.primary,
+    borderRadius: 3,
+  },
+  footerColumnTitle: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+    paddingBottom: 3,
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: COLORS.borderLight,
+  },
+  footerItem: {
+    fontSize: 9,
+    color: COLORS.text,
+    marginBottom: 2,
+    lineHeight: 1.4,
+  },
 });
 
 const ParagraphSplitter = ({ text, style }) => {
@@ -314,11 +355,26 @@ const Header = ({ primaryColor, settings, logoSrc }) => {
         <View style={[styles.headerDivider, { backgroundColor: primaryColor }]} />
       </View>
       <View style={styles.headerRight}>
-        <Text style={styles.headerRightLine}>Tel.: {settings?.phone || '(44) 9 9813-9141'}</Text>
-        <Text style={styles.headerRightLine}>E-mail: {settings?.email || 'projingehbengenharia@hotmail.com'}</Text>
-        <Text style={styles.headerRightLine}>Web: {settings?.website || 'www.projing.pro'}</Text>
-        <Text style={styles.headerRightLine}>CNPJ {settings?.cnpj || '54.348.703/0001-34'}</Text>
-        <Text style={styles.headerRightLine}>{settings?.address || 'Rua João Hungari, 575, Marialva PR, CEP 86990-000'}</Text>
+        <View style={styles.headerRightRow}>
+          <PhoneIcon color={primaryColor} />
+          <Text style={styles.headerRightLine}>{settings?.phone || '(44) 9 9813-9141'}</Text>
+        </View>
+        <View style={styles.headerRightRow}>
+          <MailIcon color={primaryColor} />
+          <Text style={styles.headerRightLine}>{settings?.email || 'projingehbengenharia@hotmail.com'}</Text>
+        </View>
+        <View style={styles.headerRightRow}>
+          <GlobeIcon color={primaryColor} />
+          <Text style={styles.headerRightLine}>{settings?.website || 'www.projing.pro'}</Text>
+        </View>
+        <View style={styles.headerRightRow}>
+          <HashIcon color={primaryColor} />
+          <Text style={styles.headerRightLine}>CNPJ {settings?.cnpj || '54.348.703/0001-34'}</Text>
+        </View>
+        <View style={styles.headerRightRow}>
+          <MapPinIcon color={primaryColor} />
+          <Text style={styles.headerRightLine}>{settings?.address || 'Rua João Hungari, 575, Marialva PR, CEP 86990-000'}</Text>
+        </View>
       </View>
     </View>
   );
@@ -485,7 +541,12 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
             {showEntrada && (
               <View style={styles.listItem}>
                 <Text style={styles.listBullet}>•</Text>
-                <Text style={styles.listText}><Text style={{ fontWeight: 'bold' }}>{percentualEntrada}%</Text> de entrada (mobilização): pagamento em {prazoEntrada} dias.</Text>
+                <Text style={styles.listText}>
+                  <Text style={{ fontWeight: 'bold' }}>{percentualEntrada}%</Text> de entrada (mobilização):{' '}
+                  {data.tipoPrazoEntrada === 'inicio'
+                    ? 'pagamento no início da obra.'
+                    : `pagamento em ${prazoEntrada} dias.`}
+                </Text>
               </View>
             )}
             {showMaterial && (
@@ -598,12 +659,25 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
           </View>
           <View style={styles.footer}>
             <Text style={styles.footerBrand}>PROJING — 15 ANOS DE EXPERIÊNCIA</Text>
-            <Text style={styles.footerText}>
-              Atuamos desenvolvendo soluções inovadoras para o setor de armazenagem de grãos.
+            <Text style={styles.footerIntro}>
+              Há mais de 15 anos atuamos com excelência no setor de infraestrutura industrial e ambiental, oferecendo soluções completas em geomembrana PEAD e tratamento de efluentes.
             </Text>
-            <Text style={styles.footerText}>
-              Desenvolvemos tecnologia para evitar impregnação de grãos em rampas, aplicada em silos, armazéns e moegas.
-            </Text>
+            <View style={styles.footerColumns}>
+              <View style={styles.footerColumn}>
+                <Text style={styles.footerColumnTitle}>Revestimentos</Text>
+                <Text style={styles.footerItem}>• Reservatórios</Text>
+                <Text style={styles.footerItem}>• Silos</Text>
+                <Text style={styles.footerItem}>• Armazéns graneleiros</Text>
+                <Text style={styles.footerItem}>• Moegas</Text>
+              </View>
+              <View style={styles.footerColumn}>
+                <Text style={styles.footerColumnTitle}>Infraestrutura &amp; Tratamento</Text>
+                <Text style={styles.footerItem}>• Tubulações em PEAD</Text>
+                <Text style={styles.footerItem}>• Tratamento de esgoto</Text>
+                <Text style={styles.footerItem}>• Tratamento de efluentes</Text>
+                <Text style={styles.footerItem}>• Águas industriais</Text>
+              </View>
+            </View>
           </View>
         </View>
       </Page>
