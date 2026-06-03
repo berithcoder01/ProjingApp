@@ -142,6 +142,7 @@ const PdfGenerator = ({ proposal, companySettings, onDone }) => {
             tipoFrete: materialMeta.tipoFrete || meta.tipoFrete || 'CIF',
             especificacoes: materialMeta.especificacoes || meta.especificacoes || '',
             garantiaMaterial: materialMeta.garantiaMaterial || meta.garantiaMaterial || '',
+            responsabilidadeContratada: meta.responsabilidadeContratada || '',
             tipoProposta: 'valor_fechado',
           };
           await generateMaterialPDF({ propNum: proposal.number, cliente, items, cond, companySettings });
@@ -172,6 +173,7 @@ const PdfGenerator = ({ proposal, companySettings, onDone }) => {
             prazoExec: rawCond.executionPeriod,
             formaPagamento: rawCond.paymentTerms,
             obs: rawCond.observations,
+            responsabilidadeContratada: proposal.metadata?.responsabilidadeContratada || '',
             tipoProposta: proposal.metadata?.tipoProposta || 'padrao',
           };
           await generateProposalPDF({ propNum: proposal.number, cliente, items, cond, companySettings });

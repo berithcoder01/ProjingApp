@@ -600,6 +600,13 @@ const ProposalDocumentPDF = ({ cliente, items, cond, propNum, companySettings, l
           </View>
         )}
 
+        {cond.responsabilidadeContratada && (
+          <View wrap={false}>
+            <SectionTitle title="RESPONSABILIDADE DA CONTRATADA" color={primaryColor} />
+            <ParagraphSplitter text={cond.responsabilidadeContratada} style={styles.paragraphText} />
+          </View>
+        )}
+
         {cond.showObs !== false && cond.obs && (
           <View wrap={false}>
             <SectionTitle title="OBSERVAÇÕES GERAIS" color={primaryColor} />

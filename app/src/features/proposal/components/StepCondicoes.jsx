@@ -475,6 +475,28 @@ const StepCondicoes = ({ data, onChange, onNext, onBack, materialMode = false })
           </div>
         )}
 
+        {/* SEÇÃO: RESPONSABILIDADE DA CONTRATADA */}
+        <div className="bg-surface border-2 border-accent/40 rounded-2xl shadow-lg shadow-accent/5 overflow-hidden">
+          <div className="p-6 space-y-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center">
+                <span className="text-accent2 font-bold text-sm">RC</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-white text-sm">Responsabilidade da Contratada</h3>
+                <p className="text-[10px] text-muted uppercase tracking-wider">Escopo e obrigações da empresa contratada</p>
+              </div>
+            </div>
+            <textarea
+              rows={6}
+              value={data.responsabilidadeContratada || ''}
+              onChange={e => update('responsabilidadeContratada', e.target.value)}
+              placeholder="Ex.: Fornecer e instalar geomembrana PEAD conforme especificações técnicas; executar serviços de terraplanagem e preparação do terreno; fornecer materiais de fixação (berço e estacas); testes de estanqueidade..."
+              className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-accent transition-all h-40 resize-none"
+            />
+          </div>
+        </div>
+
         {/* SEÇÃO: OBSERVAÇÕES GERAIS */}
         <div className={`bg-surface border-2 rounded-2xl transition-all duration-300 overflow-hidden ${data.showObs !== false ? 'border-accent/40 shadow-lg shadow-accent/5' : 'border-border opacity-70'}`}>
           <div

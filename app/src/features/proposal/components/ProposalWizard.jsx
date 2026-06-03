@@ -71,8 +71,9 @@ const ProposalWizard = () => {
     showFormaPagamento: true,
     showObsPagamento: true,
     obs: "",
-    tipoProposta: "valor_fechado"
-  });
+      responsabilidadeContratada: "",
+      tipoProposta: "valor_fechado"
+    });
   const [isDone, setIsDone] = useState(false);
   const [companySettings, setCompanySettings] = useState(null);
 
@@ -133,6 +134,7 @@ const ProposalWizard = () => {
               formaPagamento: formaPagamentoFinal,
               obsPagamento: obsPagFromObs || migratedFromTerm,
               obs: obsFinal,
+              responsabilidadeContratada: p.metadata?.responsabilidadeContratada || "",
               tipoProposta: p.metadata?.tipoProposta || "valor_fechado"
             });
           }
@@ -147,15 +149,18 @@ const ProposalWizard = () => {
 
   const handleGenerate = async () => {
     try {
+      const metadata = {
+        responsabilidadeContratada: cond.responsabilidadeContratada,
+      };
       const condToSave = {
         ...cond,
         downPaymentOnStart: cond.tipoPrazoEntrada === 'inicio',
         obs: combineObservations(cond.obsPagamento, cond.obs)
       };
       if (id) {
-        await updateProposal(id, { cliente, items, cond: condToSave, propNum });
+        await updateProposal(id, { cliente, items, cond: condToSave, propNum, metadata });
       } else {
-        await saveProposal({ cliente, items, cond: condToSave, propNum });
+        await saveProposal({ cliente, items, cond: condToSave, propNum, metadata });
       }
     } catch (err) {
       console.error(err);
@@ -184,6 +189,7 @@ const ProposalWizard = () => {
       showFormaPagamento: true,
       showObsPagamento: true,
       obs: "",
+      responsabilidadeContratada: "",
       tipoProposta: "valor_fechado"
     });
   };

@@ -236,6 +236,14 @@ const ProposalDocument = React.forwardRef(({ cliente, items, cond, propNum, comp
         </div>
       )}
 
+      {/* SECTION: Responsabilidade da Contratada */}
+      {cond.responsabilidadeContratada && (
+        <div className="pdf-section">
+          <SectionTitle title="RESPONSABILIDADE DA CONTRATADA" color={primaryColor} />
+          <ParagraphSplitter text={cond.responsabilidadeContratada} style={{ fontSize: '10pt', color: textColor, textAlign: 'justify' }} />
+        </div>
+      )}
+
       {/* SECTION: Observações Gerais */}
       {cond.showObs !== false && cond.obs && (
         <div className="pdf-section">
