@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     borderBottomColor: COLORS.primary,
     borderBottomStyle: 'solid',
-    paddingBottom: 2,
+    paddingBottom: 6,
     marginTop: M(12),
     marginBottom: M(8),
     textTransform: 'uppercase',
