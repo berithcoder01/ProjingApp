@@ -94,7 +94,7 @@ const ProposalDocument = React.forwardRef(({ cliente, items, cond, propNum, comp
           <tbody>
             <tr style={{ background: primaryColor, color: '#fff' }}>
               <td colSpan={isContinuous ? 4 : 5} style={{ padding: '6px 12px', fontWeight: 'bold', fontSize: '9pt' }}>
-                01 — MÃO DE OBRA E MATERIAIS
+                01 — DESCRIÇÃO DOS ITENS DA PROPOSTA
               </td>
             </tr>
             {items.map((it, idx) => (

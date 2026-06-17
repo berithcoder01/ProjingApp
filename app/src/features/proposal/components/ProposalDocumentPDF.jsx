@@ -430,7 +430,7 @@ const ProposalDocumentPDF = ({ cliente, items, cond, propNum, companySettings, l
             </View>
             <View style={styles.valuesGroup}>
               <Text style={styles.valuesGroupCell}>
-                01 — MÃO DE OBRA E MATERIAIS
+                01 — DESCRIÇÃO DOS ITENS DA PROPOSTA
               </Text>
             </View>
             {items.map((it, idx) => (

@@ -492,16 +492,22 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
           <View style={styles.list}>
             <View style={styles.listItem}>
               <Text style={styles.listBullet}>•</Text>
-              <Text style={styles.listText}><Text style={{ fontWeight: 'bold' }}>{data.garantiaDefeitos || '5'} anos</Text> contra defeitos de fabricação e instalação da Geomembrana PEAD.</Text>
+              <Text style={styles.listText}>
+                {data.garantiaDefeitos || '5'} anos contra defeitos de fabricação e instalação da Geomembrana PEAD.
+              </Text>
             </View>
             <View style={styles.listItem}>
               <Text style={styles.listBullet}>•</Text>
-              <Text style={styles.listText}><Text style={{ fontWeight: 'bold' }}>{data.garantiaAcidentes || '1'} ano</Text> contra danos acidentais (rasgamento, ruptura e furos).</Text>
+              <Text style={styles.listText}>
+                {data.garantiaAcidentes || '1'} ano contra danos acidentais (rasgamento, ruptura e furos).
+              </Text>
             </View>
             {data.durabilidade && (
               <View style={styles.listItem}>
                 <Text style={styles.listBullet}>•</Text>
-                <Text style={styles.listText}><Text style={{ fontWeight: 'bold' }}>{data.durabilidade} anos</Text> de durabilidade estimada do material.</Text>
+                <Text style={styles.listText}>
+                  {data.durabilidade} anos de durabilidade estimada do material.
+                </Text>
               </View>
             )}
             {data.vistorias && (
@@ -577,7 +583,7 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
         </View>
 
         {temFaturamentoDireto && (
-          <View wrap={false}>
+          <View>
             <SectionTitle title="CONDIÇÕES DE FATURAMENTO DIRETO" color={primaryColor} />
             <ParagraphSplitter text={data.condicoesFaturamento} style={styles.paragraph} />
           </View>
