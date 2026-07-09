@@ -1,5 +1,6 @@
 {
-  "outputDirectory": "app/dist",
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist",
   "functions": {
     "api/**/*.js": {
       "includeFiles": "api/{plugins,routes,prisma}/**"
