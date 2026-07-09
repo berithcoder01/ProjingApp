@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronRight, ChevronLeft, Building2, Ruler, FileText, DollarSign, Shield, CreditCard, CheckCircle, ArrowLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Building2, Ruler, FileText, DollarSign, Shield, CreditCard, CheckCircle, ArrowLeft, Layers } from 'lucide-react';
 import { fetchProposalById, fetchSettings } from '../../../shared/services/api';
 
+import Step0TipoProposta from './armazem/Step0TipoProposta';
 import Step1Cliente from './armazem/Step1Cliente';
 import Step2Dimensoes from './armazem/Step2Dimensoes';
 import Step3Descricao from './armazem/Step3Descricao';
 import Step4EscopoFornecimento from './armazem/Step4EscopoFornecimento';
+import Step4RecomendacaoMaterial from './armazem/Step4RecomendacaoMaterial';
 import Step5Opcionais from './armazem/Step5Opcionais';
 import Step6Custos from './armazem/Step6Custos';
 import Step7Impostos from './armazem/Step7Impostos';
@@ -16,6 +18,7 @@ import Step9Revisao from './armazem/Step9Revisao';
 import Step10Documento from './armazem/Step10Documento';
 
 const steps = [
+  { id: 0, title: 'Tipo', icon: Layers },
   { id: 1, title: 'Cliente', icon: Building2 },
   { id: 2, title: 'Dimensões', icon: Ruler },
   { id: 3, title: 'Descrição', icon: FileText },
@@ -30,7 +33,7 @@ const steps = [
 
 const ArmazemWizard = () => {
   const { id } = useParams();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(!!id);
   const [companySettings, setCompanySettings] = useState(null);
   const [formData, setFormData] = useState({
@@ -81,9 +84,15 @@ const ArmazemWizard = () => {
               percentualEntrada: m.condicoesPagamento?.entrada,
               prazoEntrada: m.condicoesPagamento?.prazoEntrada,
               tipoPrazoEntrada: m.condicoesPagamento?.entradaNoInicio ? 'inicio' : 'dias',
-              showMaterial: m.condicoesPagamento?.showMaterial,
-              percentualMaterial: m.condicoesPagamento?.material,
-              prazoMaterial: m.condicoesPagamento?.prazoMaterial,
+        showMaterial: m.condicoesPagamento?.showMaterial,
+        percentualMaterial: m.condicoesPagamento?.material,
+        prazoMaterial: m.condicoesPagamento?.prazoMaterial,
+
+        // Campos novos
+        modoProposta: m.modoProposta || 'completo',
+        itens: m.itens,
+        quantidadeMaterialEstimada: m.quantidadeMaterialEstimada,
+        descricaoRecomendacaoMaterial: m.descricaoRecomendacaoMaterial,
               showMedicao: m.condicoesPagamento?.showMedicao,
               percentualMedicao: m.condicoesPagamento?.percentualMedicao,
               frequenciaMedicao: m.condicoesPagamento?.frequenciaMedicao,
@@ -115,23 +124,29 @@ const ArmazemWizard = () => {
   };
 
   const handleNext = () => {
-    if (currentStep < steps.length) {
+    if (currentStep < steps.length - 1) {
       setCurrentStep(curr => curr + 1);
     }
   };
 
   const handlePrev = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(curr => curr - 1);
     }
   };
 
   const renderStep = () => {
     switch (currentStep) {
+      case 0: return <Step0TipoProposta data={formData} updateData={updateData} />;
       case 1: return <Step1Cliente data={formData} updateData={updateData} />;
       case 2: return <Step2Dimensoes data={formData} updateData={updateData} />;
       case 3: return <Step3Descricao data={formData} updateData={updateData} />;
-      case 4: return <Step4EscopoFornecimento data={formData} updateData={updateData} />;
+      case 4:
+        if (data.modoProposta === 'so_obra') {
+          return <Step4RecomendacaoMaterial data={formData} updateData={updateData} />;
+        } else {
+          return <Step4EscopoFornecimento data={formData} updateData={updateData} />;
+        }
       case 5: return <Step5Opcionais data={formData} updateData={updateData} />;
       case 6: return <Step6Custos data={formData} updateData={updateData} />;
       case 7: return <Step7Impostos data={formData} updateData={updateData} />;
@@ -148,7 +163,6 @@ const ArmazemWizard = () => {
     if (currentStep === 6) return !formData.totalGeral;
     return false;
   };
-
   return (
     <div className="max-w-5xl mx-auto py-8">
       <button 
@@ -211,7 +225,7 @@ const ArmazemWizard = () => {
           <button
             onClick={handlePrev}
             className={`flex items-center gap-2 font-bold px-6 py-3 rounded-xl transition-colors
-              ${currentStep === 1 ? 'opacity-0 pointer-events-none' : 'text-muted hover:text-white hover:bg-surface'}`}
+              ${currentStep === 0 ? 'opacity-0 pointer-events-none' : 'text-muted hover:text-white hover:bg-surface'}`}
           >
             <ChevronLeft size={20} /> Voltar
           </button>

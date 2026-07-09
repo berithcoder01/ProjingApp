@@ -25,7 +25,7 @@ const Step8Condicoes = ({ data, updateData }) => {
   const calculateSaldo = () => {
     let total = 100;
     if (showEntrada) total -= parseFloat(percentualEntrada || 0);
-    if (showMaterial) total -= parseFloat(percentualMaterial || 0);
+    if (showMaterial && data.modoProposta !== 'so_obra') total -= parseFloat(percentualMaterial || 0);
     if (showMedicao) total -= parseFloat(percentualMedicao || 0);
     return Math.max(0, total);
   };
@@ -122,7 +122,8 @@ const Step8Condicoes = ({ data, updateData }) => {
             )}
           </div>
 
-          {/* Material */}
+        {/* Material — oculto em modo só M.O. */}
+        {data.modoProposta !== 'so_obra' && (
           <div className="space-y-4">
             <label className="flex items-center gap-3 cursor-pointer group">
               <input
@@ -157,6 +158,7 @@ const Step8Condicoes = ({ data, updateData }) => {
               </div>
             )}
           </div>
+        )}
 
           {/* Medição */}
           <div className="space-y-4">

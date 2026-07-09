@@ -96,11 +96,13 @@ const Step9Revisao = ({ data }) => {
                 <span className="text-muted">Tubulação:</span>
                 <span className="text-white">{data.retirarTubulacao ? 'Sim' : 'Não'}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${data.faturamentoDireto ? 'bg-success' : 'bg-muted'}`} />
-                <span className="text-muted">Faturamento Direto:</span>
-                <span className="text-white">{data.faturamentoDireto ? 'Sim' : 'Não'}</span>
-              </div>
+        {data.modoProposta !== 'so_obra' && (
+          <div className="flex items-center gap-2">
+            <span className={`w-2 h-2 rounded-full ${data.faturamentoDireto ? 'bg-success' : 'bg-muted'}`} />
+            <span className="text-muted">Faturamento Direto:</span>
+            <span className="text-white">{data.faturamentoDireto ? 'Sim' : 'Não'}</span>
+          </div>
+        )}
             </div>
           </div>
         </div>
@@ -179,14 +181,16 @@ const Step9Revisao = ({ data }) => {
               <CheckCircle size={16} className="text-accent2" /> Condições
             </h3>
             <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted">Entrada:</span>
-                <span className="text-white">{data.percentualEntrada || '15'}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted">Material:</span>
-                <span className="text-white">{data.percentualMaterial || '40'}%</span>
-              </div>
+        <div className="flex justify-between">
+          <span className="text-muted">Entrada:</span>
+          <span className="text-white">{data.percentualEntrada || '15'}%</span>
+        </div>
+        {data.modoProposta !== 'so_obra' && (
+          <div className="flex justify-between">
+            <span className="text-muted">Material:</span>
+            <span className="text-white">{data.percentualMaterial || '40'}%</span>
+          </div>
+        )}
               <div className="flex justify-between">
                 <span className="text-muted">Validade:</span>
                 <span className="text-white">{data.validadeProposta || '60'} dias</span>

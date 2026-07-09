@@ -418,7 +418,7 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
   const calculateSaldo = () => {
     let total = 100;
     if (showEntrada) total -= parseFloat(percentualEntrada || 0);
-    if (showMaterial) total -= parseFloat(percentualMaterial || 0);
+    if (showMaterial && data.modoProposta !== 'so_obra') total -= parseFloat(percentualMaterial || 0);
     if (showMedicao) total -= parseFloat(percentualMedicao || 0);
     return Math.max(0, total);
   };
@@ -447,7 +447,9 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
             <DataRow label="Cliente:" value={data.cliente} />
             <DataRow label="Contato:" value={data.contato} />
             <DataRow label="Local:" value={data.local} />
-            <DataRow label="Objeto:" value={data.objeto || 'Revestimento interno de armazém graneleiro em PEAD'} />
+            <DataRow label="Objeto:" value={data.objeto || (
+  data.modoProposta === 'so_obra' ? 'Execução de revestimento em geomembrana PEAD (mão de obra)' : 'Revestimento interno de armazém graneleiro em PEAD'
+)} />
           </View>
         </View>
 
@@ -462,39 +464,56 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
           />
         </View>
 
-        {data.caracteristicasMaterial && (
-          <View wrap={false} style={styles.characteristicsBox}>
-            <Text style={styles.characteristicsLabel}>Características Técnicas do Material:</Text>
-            <ParagraphSplitter text={data.caracteristicasMaterial} style={styles.paragraph} />
-          </View>
-        )}
+{data.modoProposta === 'so_obra' ? (
+  <View wrap={false} style={styles.characteristicsBox}>
+    <Text style={styles.characteristicsLabel}>Recomendação de Material (Estimativa):</Text>
+    <ParagraphSplitter text={data.descricaoRecomendacaoMaterial} style={styles.paragraph} />
+  </View>
+) : (
+  data.caracteristicasMaterial && (
+    <View wrap={false} style={styles.characteristicsBox}>
+      <Text style={styles.characteristicsLabel}>Características Técnicas do Material:</Text>
+      <ParagraphSplitter text={data.caracteristicasMaterial} style={styles.paragraph} />
+    </View>
+  )
+)}
 
         <View wrap={false}>
           <SectionTitle title="ESCOPO E RESPONSABILIDADES" color={primaryColor} />
           <Text style={styles.subTitle}>Responsabilidades da Contratada</Text>
-          <ParagraphSplitter
-            text={data.escopoResponsabilidades || '• Mão de obra e materiais\n• Equipamentos e ferramentas\n• EPIs para toda equipe'}
-            style={styles.paragraph}
-          />
-          <Text style={styles.subTitle}>Itens Inclusos no Fornecimento</Text>
-          <ParagraphSplitter text={data.itensInclusos} style={styles.paragraph} />
+<ParagraphSplitter
+  text={data.escopoResponsabilidades || (
+    data.modoProposta === 'so_obra'
+      ? '• Execução dos serviços e mão de obra especializada\n• Equipamentos, ferramentas e EPIs para instalação de geomembrana PEAD\n• Mobilização e desmobilização da equipe\n• Controle de qualidade e entregas'
+      : '• Mão de obra e materiais\n• Equipamentos e ferramentas\n• EPIs para toda equipe'
+  )}
+  style={styles.paragraph}
+/>
+        {data.modoProposta !== 'so_obra' && (
+          <>
+            <Text style={styles.subTitle}>Itens Inclusos no Fornecimento</Text>
+            <ParagraphSplitter text={data.itensInclusos} style={styles.paragraph} />
+          </>
+        )}
         </View>
 
-        {data.fornecimentoCliente && (
-          <View style={styles.clientBox} wrap={false}>
-            <Text style={styles.clientLabel}>Fornecimento por conta do Cliente:</Text>
-            <ParagraphSplitter text={data.fornecimentoCliente} style={styles.paragraphMuted} />
-          </View>
-        )}
+{data.fornecimentoCliente && data.modoProposta !== 'so_obra' && (
+  <View style={styles.clientBox} wrap={false}>
+    <Text style={styles.clientLabel}>Fornecimento por conta do Cliente:</Text>
+    <ParagraphSplitter text={data.fornecimentoCliente} style={styles.paragraphMuted} />
+  </View>
+)}
 
         <View wrap={false}>
           <SectionTitle title="GARANTIAS DO SISTEMA" color={primaryColor} />
           <View style={styles.list}>
             <View style={styles.listItem}>
               <Text style={styles.listBullet}>•</Text>
-              <Text style={styles.listText}>
-                {data.garantiaDefeitos || '5'} anos contra defeitos de fabricação e instalação da Geomembrana PEAD.
-              </Text>
+<Text style={styles.listText}>
+  {data.modoProposta === 'so_obra'
+    ? `${data.garantiaDefeitos || '5'} anos de garantia do serviço de instalação de geomembrana.`
+    : `${data.garantiaDefeitos || '5'} anos contra defeitos de fabricação e instalação da Geomembrana PEAD.`}
+</Text>
             </View>
             <View style={styles.listItem}>
               <Text style={styles.listBullet}>•</Text>
@@ -528,16 +547,19 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
               <Text style={styles.valuesHeaderCell}>UNID.</Text>
               <Text style={styles.valuesHeaderCell}>VALOR TOTAL (R$)</Text>
             </View>
-            <View style={styles.valuesRow}>
-              <Text style={styles.valuesCell}>01</Text>
-              <Text style={styles.valuesCellLeft}>Fornecimento de materiais e execução de revestimento em Geomembrana PEAD</Text>
-              <Text style={styles.valuesCell}>UN</Text>
-              <Text style={styles.valuesCellBold}>{fmt(data.totalGeral || 0)}</Text>
-            </View>
-            <View style={styles.valuesHeader}>
-              <Text style={styles.valuesTotalLabel}>VALOR TOTAL GERAL DA PROPOSTA:</Text>
-              <Text style={styles.valuesTotalValue}>{fmt(data.totalGeral || 0)}</Text>
-            </View>
+        {/* Linhas de itens */}
+        {data.itens && data.itens.map((item, index) => (
+          <View key={index} style={styles.valuesRow}>
+            <Text style={styles.valuesCell}>{index + 1}</Text>
+            <Text style={styles.valuesCellLeft}>{item.descricao}</Text>
+            <Text style={styles.valuesCell}>UN</Text>
+            <Text style={styles.valuesCellBold}>{fmt(item.valor || 0)}</Text>
+          </View>
+        ))}
+        <View style={styles.valuesHeader}>
+          <Text style={styles.valuesTotalLabel}>VALOR TOTAL GERAL DA PROPOSTA:</Text>
+          <Text style={styles.valuesTotalValue}>{fmt(data.totalGeral || 0)}</Text>
+        </View>
           </View>
         </View>
 
@@ -555,12 +577,12 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
                 </Text>
               </View>
             )}
-            {showMaterial && (
-              <View style={styles.listItem}>
-                <Text style={styles.listBullet}>•</Text>
-                <Text style={styles.listText}><Text style={{ fontWeight: 'bold' }}>{percentualMaterial}%</Text> na entrega da Geomembrana no canteiro: pagamento em {prazoMaterial} dias.</Text>
-              </View>
-            )}
+{(showMaterial && data.modoProposta !== 'so_obra') && (
+  <View style={styles.listItem}>
+    <Text style={styles.listBullet}>•</Text>
+    <Text style={styles.listText}><Text style={{ fontWeight: 'bold' }}>{percentualMaterial}%</Text> na entrega da Geomembrana no canteiro: pagamento em {prazoMaterial} dias.</Text>
+  </View>
+)}
             {showMedicao && (
               <View style={styles.listItem}>
                 <Text style={styles.listBullet}>•</Text>
@@ -582,12 +604,12 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
           </View>
         </View>
 
-        {temFaturamentoDireto && (
-          <View>
-            <SectionTitle title="CONDIÇÕES DE FATURAMENTO DIRETO" color={primaryColor} />
-            <ParagraphSplitter text={data.condicoesFaturamento} style={styles.paragraph} />
-          </View>
-        )}
+{temFaturamentoDireto && data.modoProposta !== 'so_obra' && (
+  <View>
+    <SectionTitle title="CONDIÇÕES DE FATURAMENTO DIRETO" color={primaryColor} />
+    <ParagraphSplitter text={data.condicoesFaturamento} style={styles.paragraph} />
+  </View>
+)}
 
         <View wrap={false}>
           <SectionTitle title="QUADRO DE IMPOSTOS" color={primaryColor} />
@@ -607,6 +629,8 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
               <Text style={styles.valuesCell}>ISS</Text>
               <Text style={styles.valuesCellBold}>{data.impostoISS || '2.79'}%</Text>
             </View>
+        {data.modoProposta !== 'so_obra' && (
+          <>
             <View style={styles.valuesRow}>
               <Text style={styles.valuesCell}>Materiais</Text>
               <Text style={styles.valuesCell}>Geomembrana IPI</Text>
@@ -617,6 +641,8 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
               <Text style={styles.valuesCell}>DIFAL</Text>
               <Text style={styles.valuesCellBold}>{data.impostoDIFAL || '6.00'}%</Text>
             </View>
+          </>
+        )}
           </View>
         </View>
 

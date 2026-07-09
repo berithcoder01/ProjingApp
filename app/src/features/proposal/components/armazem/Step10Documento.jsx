@@ -42,9 +42,14 @@ const Step10Documento = ({ data, companySettings }) => {
           material: data._calculo?.material || { espessura: data.espessura },
           descricaoServico: data.descricaoServico,
           caracteristicasMaterial: data.caracteristicasMaterial,
-          escopoResponsabilidades: data.escopoResponsabilidades,
-          itensInclusos: data.itensInclusos,
-          opcionais: {
+        escopoResponsabilidades: data.escopoResponsabilidades,
+        itensInclusos: data.itensInclusos,
+        opcionais: {
+        // Campos novos
+        modoProposta: data.modoProposta,
+        itens: data.itens,
+        quantidadeMaterialEstimada: data.quantidadeMaterialEstimada,
+        descricaoRecomendacaoMaterial: data.descricaoRecomendacaoMaterial,
             linhaVida: !!data.incluirLinhaVida,
             tubulacao: !!data.retirarTubulacao,
             faturamentoDireto: !!data.faturamentoDireto
@@ -81,10 +86,10 @@ const Step10Documento = ({ data, companySettings }) => {
             frequenciaMedicao: data.frequenciaMedicao,
             prazoPagamentoMedicao: data.prazoPagamentoMedicao,
             showSaldo: data.showSaldo !== false,
-            saldo: 100 
-                   - (data.showEntrada !== false ? parseFloat(data.percentualEntrada || 0) : 0)
-                   - (data.showMaterial !== false ? parseFloat(data.percentualMaterial || 0) : 0)
-                   - (data.showMedicao ? parseFloat(data.percentualMedicao || 0) : 0),
+        saldo: 100
+          - (showEntrada !== false ? parseFloat(data.percentualEntrada || 0) : 0)
+          - ((showMaterial !== false && data.modoProposta !== 'so_obra') ? parseFloat(data.percentualMaterial || 0) : 0)
+          - (showMedicao ? parseFloat(data.percentualMedicao || 0) : 0),
             prazoSaldo: data.prazoSaldo,
             formaPagamento: data.formaPagamento
           },
@@ -193,9 +198,20 @@ const Step10Documento = ({ data, companySettings }) => {
             <div className="bg-bg p-6 rounded-xl border border-border flex flex-col justify-center items-center text-center space-y-2">
               <div className="text-[10px] text-muted uppercase font-bold tracking-widest">Valor Final</div>
               <div className="text-4xl font-black font-syne text-accent2">{fmt(data.totalGeral || 0)}</div>
-              <div className="text-xs text-muted">
-                Material: {fmt(parseFloat(data.valorMaterialManual) || 0)} + M.O.: {fmt(parseFloat(data.valorMaoDeObra) || 0)}
-              </div>
+              {data.itens && data.itens.length > 0 ? (
+                <div className="space-y-1 mt-2 text-xs text-muted">
+                  {data.itens.map((item, i) => (
+                    <div key={i} className="flex justify-between">
+                      <span>{item.descricao.replace(/^\s*\d+\.?\s*/, '')}</span>
+                      <span>{fmt(item.valor)}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-xs text-muted">
+                  Material: {fmt(parseFloat(data.valorMaterialManual) || 0)} + M.O.: {fmt(parseFloat(data.valorMaoDeObra) || 0)}
+                </div>
+              )}
             </div>
           </div>
 
