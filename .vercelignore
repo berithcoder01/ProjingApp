@@ -1,8 +1,5 @@
-.app/
 .git/
-src/
 armazem-modo-obra.md
 icon.png
 make-exec.js
 proposta alvo/
-vercel-build.sh
