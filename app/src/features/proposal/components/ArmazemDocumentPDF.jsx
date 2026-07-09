@@ -489,7 +489,7 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
   )}
   style={styles.paragraph}
 />
-        {data.modoProposta !== 'so_obra' && (
+        {data.itensInclusos && (
           <>
             <Text style={styles.subTitle}>Itens Inclusos no Fornecimento</Text>
             <ParagraphSplitter text={data.itensInclusos} style={styles.paragraph} />

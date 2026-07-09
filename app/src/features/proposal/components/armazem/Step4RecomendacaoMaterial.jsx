@@ -17,28 +17,21 @@ const RESPONSABILIDADES_PADRAO = `• Execução dos serviços e mão de obra es
 const gerarItensInclusos = ({ m2, espessura, metrosCabo, incluirLinhaVida, qtdSuportes, chumbadores }) => {
   const itens = [
     `Parafusos zincados com expansão mecânica — adquirido e faturado diretamente pelo cliente`,
-    `${m2} m² de geomembrana PEAD ${espessura} mm — adquirido e faturado diretamente pelo cliente`,
+    `Perfis metálicos para vedação (barra chata) — adquirido e faturado diretamente pelo cliente`,
   ];
 
   if (incluirLinhaVida) {
     itens.push(`Linha de vida (${metrosCabo} m cabo aço galvanizado) — adquirido e faturado diretamente pelo cliente`);
+    itens.push(`Suportes para linha de vida — adquirido e faturado diretamente pelo cliente`);
+    itens.push(`Chumbadores para linha de vida — adquirido e faturado diretamente pelo cliente`);
   }
 
   itens.push(
-    `Perfis metálicos — adquirido e faturado diretamente pelo cliente`,
     `Ferramental geral`,
     `Soldador técnico (termofusão)`,
     `04 colaboradores (mão de obra braçal)`,
-    `Soldador termoplástico`,
-    `Técnico mecânico`,
-    `Hospedagem da equipe`,
-    `Máquina de solda termoplástica`,
-    `Perfis metálicos para ${qtdSuportes} suportes — adquirido e faturado diretamente pelo cliente`,
-    `Furadeira de bancada`,
-    `Compressor`,
-    `Máquina de solda metálica`,
-    `~${chumbadores} chumbadores — adquirido e faturado diretamente pelo cliente`,
-    `${Math.round(chumbadores * 0.035)} chumbadores PBA 3/4 — adquirido e faturado diretamente pelo cliente`
+    `Hospedagem, alimentação e transporte da equipe`,
+    `EPIs de uso pessoal`,
   );
 
   return itens.map((item, i) => `${i + 1}. ${item}`).join('\n');

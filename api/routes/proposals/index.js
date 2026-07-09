@@ -188,16 +188,16 @@ export default async function (fastify, opts) {
   fastify.delete('/:id', async function (request, reply) {
     const { id } = request.params
     try {
-      // 1. Remove dependências (o schema não tem onDelete: Cascade)
-      await fastify.prisma.proposalItem.deleteMany({ where: { proposalId: id } })
-      await fastify.prisma.commercialConditions.deleteMany({ where: { proposalId: id } })
-      // 2. Remove a proposta
-      await fastify.prisma.proposal.delete({ where: { id } })
+      await fastify.prisma.$transaction(async (tx) => {
+        await tx.proposalItem.deleteMany({ where: { proposalId: id } })
+        await tx.commercialConditions.deleteMany({ where: { proposalId: id } })
+        await tx.proposal.delete({ where: { id } })
+      })
       return reply.code(204).send()
     } catch (error) {
       request.log.error(error)
       if (error.code === 'P2025') return reply.code(404).send({ error: 'Proposta não encontrada' })
-      return reply.code(500).send({ error: 'Erro ao deletar proposta' })
+      return reply.code(500).send({ error: 'Erro ao deletar proposta', details: error.message })
     }
   })
 
