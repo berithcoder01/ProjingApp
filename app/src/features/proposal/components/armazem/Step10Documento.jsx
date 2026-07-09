@@ -201,8 +201,15 @@ const Step10Documento = ({ data, companySettings }) => {
               {data.itens && data.itens.length > 0 ? (
                 <div className="space-y-1 mt-2 text-xs text-muted">
                   {data.itens.map((item, i) => (
-                    <div key={i} className="flex justify-between">
-                      <span>{item.descricao.replace(/^\s*\d+\.?\s*/, '')}</span>
+                    <div key={i} className="flex justify-between gap-4">
+                      <span>
+                        {item.descricao.replace(/^\s*\d+\.?\s*/, '')}
+                        {item.quantidade ? (
+                          <small className="ml-2 text-muted">
+                            ({Number(item.quantidade).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} {item.unidade || 'UN'})
+                          </small>
+                        ) : null}
+                      </span>
                       <span>{fmt(item.valor)}</span>
                     </div>
                   ))}

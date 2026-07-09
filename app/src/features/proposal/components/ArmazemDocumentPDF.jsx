@@ -544,7 +544,7 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
             <View style={styles.valuesHeader}>
               <Text style={styles.valuesHeaderCell}>ITEM</Text>
               <Text style={styles.valuesHeaderCellLeft}>DESCRIÇÃO DOS SERVIÇOS E MATERIAIS</Text>
-              <Text style={styles.valuesHeaderCell}>UNID.</Text>
+              <Text style={styles.valuesHeaderCell}>QTD./UNID.</Text>
               <Text style={styles.valuesHeaderCell}>VALOR TOTAL (R$)</Text>
             </View>
         {/* Linhas de itens */}
@@ -552,7 +552,9 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
           <View key={index} style={styles.valuesRow}>
             <Text style={styles.valuesCell}>{index + 1}</Text>
             <Text style={styles.valuesCellLeft}>{item.descricao}</Text>
-            <Text style={styles.valuesCell}>UN</Text>
+            <Text style={styles.valuesCell}>
+              {Number(item.quantidade || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} {item.unidade || 'UN'}
+            </Text>
             <Text style={styles.valuesCellBold}>{fmt(item.valor || 0)}</Text>
           </View>
         ))}

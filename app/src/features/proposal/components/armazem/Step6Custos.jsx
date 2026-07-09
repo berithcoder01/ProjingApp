@@ -1,9 +1,14 @@
 import React from 'react';
+import { Package } from 'lucide-react';
 import { fmt } from '../../constants';
 import PropostasArmazemDinamico from './PropostasArmazemDinamico';
 
 const Step6Custos = ({ data, updateData }) => {
   const calc = data._calculo;
+  const quantidadeEstimada = parseFloat(
+    data.quantidadeMaterialEstimada || calc?.material?.areaGeomembrana || 0
+  );
+  const qtdBobinas = calc?.material?.qtdBobinas || 0;
 
   if (!calc) {
     return (
@@ -44,12 +49,33 @@ const Step6Custos = ({ data, updateData }) => {
       <div className="mb-4">
         <h2 className="text-2xl font-bold font-syne text-white">Orçamento da Proposta</h2>
         <p className="text-muted text-sm mt-1">
-          Adicione os itens que compõem o valor total da proposta.
-          {data.modoProposta === 'so_obra' 
-            ? 'No modo "Só Mão de Obra", o cálculo automático é desativado, mas você pode usar os valores basepara dimensionar o serviço.' 
+          Adicione os itens que compõem o valor total da proposta.{' '}
+          {data.modoProposta === 'so_obra'
+            ? 'No modo "Só Mão de Obra", informe o valor total de cada serviço usando a quantidade estimada como referência.'
             : ' O primeiro item é pré-preenchido com o custo automático da geomembrana.'}
         </p>
       </div>
+
+      {data.modoProposta === 'so_obra' && (
+        <div className="flex flex-col gap-3 rounded-2xl border-2 border-accent/40 bg-accent/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent2">
+              <Package size={22} />
+            </div>
+            <div>
+              <div className="text-xs font-bold uppercase tracking-widest text-muted">Base estimada para o serviço</div>
+              <div className="text-xl font-black text-white">
+                {quantidadeEstimada.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} m²
+              </div>
+            </div>
+          </div>
+          <div className="text-sm text-muted sm:text-right">
+            Equivalente a <strong className="text-white">{qtdBobinas} bobinas</strong>
+            <br />
+            de geomembrana PEAD {data.espessura || '2.00'} mm
+          </div>
+        </div>
+      )}
 
       {/* Tabela de itens */}
       <PropostasArmazemDinamico data={data} updateData={updateData} />

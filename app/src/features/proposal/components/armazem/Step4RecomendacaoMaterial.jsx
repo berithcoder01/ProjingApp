@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { Info, Package } from 'lucide-react';
 import { fmtNum } from '../../constants';
-import TextareaAutosize from 'react-textarea-autosize';
 
 const RECOMENDACAO_PADRAO = `• Geomembrana PEAD 100% virgem (material reciclado não é aceito para revestimento de armazém graneleiro)
 • Espessura conforme cálculo técnico ({espessura} mm)
 • Quantidade estimada: {area} m² ({qtdBobinas} bobinas)
-• Material deve ser fornecido pelo cliente,those devidamente acondicionado para aplicação
+• Material deve ser fornecido pelo cliente e estar devidamente acondicionado para aplicação
 • Recomenda-se conferência do material no canteiro antes do início da execução`;
 
 const Step4RecomendacaoMaterial = ({ data, updateData }) => {

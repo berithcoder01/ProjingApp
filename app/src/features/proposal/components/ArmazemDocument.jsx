@@ -154,17 +154,21 @@ const ArmazemDocument = React.forwardRef(({ data, companySettings }, ref) => {
             <tr style={{ background: primaryColor, color: '#fff' }}>
               <th style={thStyle}>ITEM</th>
               <th style={{ ...thStyle, textAlign: 'left' }}>DESCRIÇÃO DOS SERVIÇOS E MATERIAIS</th>
-              <th style={thStyle}>UNID.</th>
+              <th style={thStyle}>QTD./UNID.</th>
               <th style={thStyle}>VALOR TOTAL (R$)</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td style={tdStyle}>01</td>
-              <td style={{ ...tdStyle, textAlign: 'left' }}>Fornecimento de materiais e execução de revestimento em Geomembrana PEAD</td>
-              <td style={tdStyle}>UN</td>
-              <td style={{ ...tdStyle, textAlign: 'right', fontWeight: 'bold' }}>{fmt(data.totalGeral || 0)}</td>
-            </tr>
+            {(data.itens || []).map((item, index) => (
+              <tr key={index}>
+                <td style={tdStyle}>{String(index + 1).padStart(2, '0')}</td>
+                <td style={{ ...tdStyle, textAlign: 'left' }}>{item.descricao}</td>
+                <td style={tdStyle}>
+                  {Number(item.quantidade || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} {item.unidade || 'UN'}
+                </td>
+                <td style={{ ...tdStyle, textAlign: 'right', fontWeight: 'bold' }}>{fmt(item.valor || 0)}</td>
+              </tr>
+            ))}
             <tr style={{ background: primaryColor, color: '#fff' }}>
               <td colSpan={3} style={{ padding: '12px 15px', textAlign: 'right', fontWeight: 'bold', fontSize: '12pt' }}>VALOR TOTAL GERAL DA PROPOSTA:</td>
               <td style={{ padding: '12px 15px', textAlign: 'right', fontWeight: 'bold', fontSize: '13pt' }}>{fmt(data.totalGeral || 0)}</td>
