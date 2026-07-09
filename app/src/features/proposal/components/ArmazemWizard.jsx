@@ -71,6 +71,7 @@ const ArmazemWizard = () => {
               incluirLinhaVida: m.opcionais?.linhaVida,
               retirarTubulacao: m.opcionais?.tubulacao,
               faturamentoDireto: m.opcionais?.faturamentoDireto,
+              condicoesFaturamento: m.condicoesFaturamento,
               // Garantias
               garantiaDefeitos: m.garantias?.defeitos,
               garantiaAcidentes: m.garantias?.acidentes,
@@ -90,9 +91,9 @@ const ArmazemWizard = () => {
 
         // Campos novos
         modoProposta: m.modoProposta || 'completo',
-        itens: m.itens,
-        quantidadeMaterialEstimada: m.quantidadeMaterialEstimada,
-        descricaoRecomendacaoMaterial: m.descricaoRecomendacaoMaterial,
+        itens: m.opcionais?.itens ?? m.itens,
+        quantidadeMaterialEstimada: m.opcionais?.quantidadeMaterialEstimada ?? m.quantidadeMaterialEstimada,
+        descricaoRecomendacaoMaterial: m.opcionais?.descricaoRecomendacaoMaterial ?? m.descricaoRecomendacaoMaterial,
               showMedicao: m.condicoesPagamento?.showMedicao,
               percentualMedicao: m.condicoesPagamento?.percentualMedicao,
               frequenciaMedicao: m.condicoesPagamento?.frequenciaMedicao,
