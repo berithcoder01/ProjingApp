@@ -1,0 +1,10 @@
+# Ignore .agent/ and Kryten
+.agent/
+AGENTS.md
+armazem-modo-obra.md
+src/
+.vscode/
+.gitignore
+.env.local
+.env.development.local
+.git/
