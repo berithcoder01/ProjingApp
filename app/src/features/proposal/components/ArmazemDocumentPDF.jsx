@@ -607,7 +607,7 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
         </View>
 
 {temFaturamentoDireto && (
-  <View>
+  <View wrap={false}>
     <SectionTitle title="CONDIÇÕES DE FATURAMENTO DIRETO" color={primaryColor} />
     <ParagraphSplitter text={data.condicoesFaturamento} style={styles.paragraph} />
   </View>
