@@ -111,22 +111,43 @@ const Step9Revisao = ({ data }) => {
             <h3 className="font-bold text-accent2 text-sm mb-3 flex items-center gap-2">
               <CheckCircle size={16} /> Valores
             </h3>
-            <div className="space-y-2 text-sm">
+        <div className="space-y-2 text-sm">
+          {data.itens && data.itens.length > 0 ? (
+            <>
+              <table className="w-full text-white">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-2 text-xs text-muted">ITEM</th>
+                    <th className="text-left py-2 text-xs text-muted">DESCRIÇÃO</th>
+                    <th className="text-right py-2 text-xs text-muted">VALOR (R$)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.itens.map((item, index) => (
+                    <tr key={index} className="border-b border-border/50">
+                      <td className="py-2 text-xs">{index + 1}</td>
+                      <td className="py-2">{item.descricao || '—'}</td>
+                      <td className="py-2 text-right">{fmt(item.valor || 0)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colSpan="2" className="pt-4 text-left font-bold">TOTAL:</td>
+                    <td className="pt-4 text-right font-black text-lg text-accent2">{fmt(data.totalGeral || 0)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </>
+          ) : (
+            <div className="border-t border-border pt-2 mt-2">
               <div className="flex justify-between">
-                <span className="text-muted">Material:</span>
-                <span className="text-white font-bold">{fmt(parseFloat(data.valorMaterialManual) || 0)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted">Mão de Obra:</span>
-                <span className="text-white font-bold">{fmt(parseFloat(data.valorMaoDeObra) || 0)}</span>
-              </div>
-              <div className="border-t border-border pt-2 mt-2">
-                <div className="flex justify-between">
-                  <span className="text-white font-bold">TOTAL:</span>
-                  <span className="text-accent2 font-black text-lg">{fmt(data.totalGeral || 0)}</span>
-                </div>
+                <span className="text-white font-bold">TOTAL:</span>
+                <span className="text-accent2 font-black text-lg">{fmt(data.totalGeral || 0)}</span>
               </div>
             </div>
+          )}
+        </div>
           </div>
 
           <div className="bg-surface border-2 border-border p-4 rounded-xl">
