@@ -1,22 +1,17 @@
-# Ignore .agent/ and Kryten
-.agent/
-AGENTS.md
-armazem-modo-obra.md
 src/
-.vscode/
-.gitignore
+armazem-modo-obra.md
+AGENTS.md
+KNOWLEDGE_BASE_PDF.md
+icon.png
+make-exec.js
+vercel-build.sh
 .env.local
 .env.development.local
 .git/
-make-exec.js
+.gitignore
+.vercelignore
+.vscode/
 node_modules/
 package.json
 package-lock.json
-AGENTS.md
-armazem-modo-obra.md
-src/
-.vscode/
-.gitignore
-.env.local
-.env.development.local
-.git/
+proposta alvo/

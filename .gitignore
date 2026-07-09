@@ -1,5 +1,17 @@
+node_modules/
 .vercel
 .env
 .env.*
 !.env.example
 .env*.local
+dist/
+build/
+*.log
+.DS_Store
+Thumbs.db
+.capacitor/
+android/app/build/
+android/build/
+android/.gradle/
+coverage/
+.nyc_output/
