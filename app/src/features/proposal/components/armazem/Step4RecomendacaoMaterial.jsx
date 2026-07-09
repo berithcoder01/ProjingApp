@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Info, Package } from 'lucide-react';
+import { Info, Package, CheckCircle } from 'lucide-react';
 import { fmtNum } from '../../constants';
 
 const RECOMENDACAO_PADRAO = `• Geomembrana PEAD 100% virgem (material reciclado não é aceito para revestimento de armazém graneleiro)
@@ -7,6 +7,11 @@ const RECOMENDACAO_PADRAO = `• Geomembrana PEAD 100% virgem (material reciclad
 • Quantidade estimada: {area} m² ({qtdBobinas} bobinas)
 • Material deve ser fornecido pelo cliente e estar devidamente acondicionado para aplicação
 • Recomenda-se conferência do material no canteiro antes do início da execução`;
+
+const RESPONSABILIDADES_PADRAO = `• Execução dos serviços e mão de obra especializada
+• Equipamentos, ferramentas e EPIs para instalação de geomembrana PEAD
+• Mobilização e desmobilização da equipe
+• Controle de qualidade e entregas`;
 
 const Step4RecomendacaoMaterial = ({ data, updateData }) => {
   const calc = data._calculo;
@@ -28,7 +33,14 @@ const Step4RecomendacaoMaterial = ({ data, updateData }) => {
     if (calc && !data.descricaoRecomendacaoMaterial) {
       updateData('descricaoRecomendacaoMaterial', gerarTextoPadrao());
     }
+    if (!data.escopoResponsabilidades) {
+      updateData('escopoResponsabilidades', RESPONSABILIDADES_PADRAO);
+    }
   }, [calc]);
+
+  const restaurarResponsabilidades = () => {
+    updateData('escopoResponsabilidades', RESPONSABILIDADES_PADRAO);
+  };
 
   if (!calc) {
     return (
@@ -53,6 +65,28 @@ const Step4RecomendacaoMaterial = ({ data, updateData }) => {
           Estimativa de material para dimensionar a mão de obra. Como esta é uma proposta de
           execução sem fornecimento, deixe aqui a recomendação técnica para o cliente.
         </p>
+      </div>
+
+      <div className="bg-surface border-2 border-border p-6 rounded-2xl space-y-6">
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="block text-[10px] font-bold text-accent2 uppercase tracking-widest ml-1 flex items-center gap-2">
+              <CheckCircle size={14} /> Responsabilidades da Contratada
+            </label>
+            <button
+              onClick={restaurarResponsabilidades}
+              className="text-[10px] font-bold text-muted hover:text-white transition-colors underline"
+            >
+              Restaurar Padrão
+            </button>
+          </div>
+          <textarea
+            value={data.escopoResponsabilidades || ''}
+            onChange={(e) => updateData('escopoResponsabilidades', e.target.value)}
+            className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-accent transition-colors h-40 resize-none text-sm"
+            placeholder="Lista de responsabilidades..."
+          />
+        </div>
       </div>
 
       {/* Quantidade estimada */}
