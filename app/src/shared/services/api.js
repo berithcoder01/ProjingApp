@@ -112,6 +112,24 @@ export const updateProposalStatus = async (id, status) => {
   return response.json();
 };
 
+export const deleteProposal = async (id) => {
+  const response = await fetch(`${API_URL}/proposals/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) throw new Error('Falha ao excluir proposta');
+  return true;
+};
+
+export const duplicateProposal = async (id) => {
+  const response = await fetch(`${API_URL}/proposals/${id}/duplicate`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) throw new Error('Falha ao duplicar proposta');
+  return response.json();
+};
+
 
 export const fetchClients = async () => {
   const response = await fetch(`${API_URL}/clients`, { headers: getAuthHeaders() });

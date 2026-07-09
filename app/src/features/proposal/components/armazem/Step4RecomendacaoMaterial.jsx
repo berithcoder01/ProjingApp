@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Info, Package, CheckCircle } from 'lucide-react';
+import { Info, Package, CheckCircle, ClipboardList } from 'lucide-react';
 import { fmtNum } from '../../constants';
 
 const RECOMENDACAO_PADRAO = `• Geomembrana PEAD 100% virgem (material reciclado não é aceito para revestimento de armazém graneleiro)
@@ -13,11 +13,53 @@ const RESPONSABILIDADES_PADRAO = `• Execução dos serviços e mão de obra es
 • Mobilização e desmobilização da equipe
 • Controle de qualidade e entregas`;
 
+// Gera a lista de itens inclusos com/sem linha de vida e numeração correta
+const gerarItensInclusos = ({ m2, espessura, metrosCabo, incluirLinhaVida, qtdSuportes, chumbadores }) => {
+  const itens = [
+    `Parafusos zincados com expansão mecânica — adquirido e faturado diretamente pelo cliente`,
+    `${m2} m² de geomembrana PEAD ${espessura} mm — adquirido e faturado diretamente pelo cliente`,
+  ];
+
+  if (incluirLinhaVida) {
+    itens.push(`Linha de vida (${metrosCabo} m cabo aço galvanizado) — adquirido e faturado diretamente pelo cliente`);
+  }
+
+  itens.push(
+    `Perfis metálicos — adquirido e faturado diretamente pelo cliente`,
+    `Ferramental geral`,
+    `Soldador técnico (termofusão)`,
+    `04 colaboradores (mão de obra braçal)`,
+    `Soldador termoplástico`,
+    `Técnico mecânico`,
+    `Hospedagem da equipe`,
+    `Máquina de solda termoplástica`,
+    `Perfis metálicos para ${qtdSuportes} suportes — adquirido e faturado diretamente pelo cliente`,
+    `Furadeira de bancada`,
+    `Compressor`,
+    `Máquina de solda metálica`,
+    `~${chumbadores} chumbadores — adquirido e faturado diretamente pelo cliente`,
+    `${Math.round(chumbadores * 0.035)} chumbadores PBA 3/4 — adquirido e faturado diretamente pelo cliente`
+  );
+
+  return itens.map((item, i) => `${i + 1}. ${item}`).join('\n');
+};
+
+// Calcula metros de cabo: ((LARGURA×2 + COMPRIMENTO×2) * 2) + 5%
+const calcMetrosCabo = (largura, comprimento) => {
+  const l = parseFloat(largura) || 0;
+  const c = parseFloat(comprimento) || 0;
+  return Math.ceil(((l * 2) + (c * 2)) * 2 * 1.05);
+};
+
 const Step4RecomendacaoMaterial = ({ data, updateData }) => {
   const calc = data._calculo;
   const area = calc?.material?.areaGeomembrana || 0;
   const qtdBobinas = calc?.material?.qtdBobinas || 0;
   const espessura = data.espessura || '2.00';
+  const chumbadores = Math.round((calc?.areas?.totalObra || 0) * 0.78);
+  const metrosCabo = data.incluirLinhaVida
+    ? calcMetrosCabo(data.largura, data.comprimento)
+    : 0;
 
   const gerarTextoPadrao = () => {
     return RECOMENDACAO_PADRAO
@@ -36,10 +78,41 @@ const Step4RecomendacaoMaterial = ({ data, updateData }) => {
     if (!data.escopoResponsabilidades) {
       updateData('escopoResponsabilidades', RESPONSABILIDADES_PADRAO);
     }
-  }, [calc]);
+    if (calc && !data.itensInclusos) {
+      const qtdSuportes = Math.round((calc?.areas?.totalObra || 0) / 40);
+      const metros = data.incluirLinhaVida
+        ? calcMetrosCabo(data.largura, data.comprimento)
+        : 0;
+      const texto = gerarItensInclusos({
+        m2: area.toFixed(0),
+        espessura,
+        metrosCabo: metros,
+        incluirLinhaVida: data.incluirLinhaVida,
+        qtdSuportes,
+        chumbadores,
+      });
+      updateData('itensInclusos', texto);
+    }
+  }, [calc, area, espessura, data.incluirLinhaVida]);
 
   const restaurarResponsabilidades = () => {
     updateData('escopoResponsabilidades', RESPONSABILIDADES_PADRAO);
+  };
+
+  const restaurarItens = () => {
+    const metros = data.incluirLinhaVida
+      ? calcMetrosCabo(data.largura, data.comprimento)
+      : 0;
+    const qtdSuportes = Math.round((calc?.areas?.totalObra || 0) / 40);
+    const texto = gerarItensInclusos({
+      m2: area.toFixed(0),
+      espessura,
+      metrosCabo: metros,
+      incluirLinhaVida: data.incluirLinhaVida,
+      qtdSuportes,
+      chumbadores,
+    });
+    updateData('itensInclusos', texto);
   };
 
   if (!calc) {
@@ -67,7 +140,13 @@ const Step4RecomendacaoMaterial = ({ data, updateData }) => {
         </p>
       </div>
 
+      {/* ESCOPO E RESPONSABILIDADES */}
       <div className="bg-surface border-2 border-border p-6 rounded-2xl space-y-6">
+        <div className="flex items-center gap-2 pb-2 border-b border-border/50">
+          <ClipboardList size={16} className="text-accent2" />
+          <span className="text-[10px] font-bold text-accent2 uppercase tracking-widest">Escopo e Responsabilidades</span>
+        </div>
+
         <div>
           <div className="flex justify-between items-center mb-2">
             <label className="block text-[10px] font-bold text-accent2 uppercase tracking-widest ml-1 flex items-center gap-2">
@@ -86,6 +165,52 @@ const Step4RecomendacaoMaterial = ({ data, updateData }) => {
             className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-accent transition-colors h-40 resize-none text-sm"
             placeholder="Lista de responsabilidades..."
           />
+        </div>
+
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="block text-[10px] font-bold text-accent2 uppercase tracking-widest ml-1 flex items-center gap-2">
+              <Package size={14} /> Itens Inclusos
+            </label>
+            <button
+              onClick={restaurarItens}
+              className="text-[10px] font-bold text-muted hover:text-white transition-colors underline"
+            >
+              Restaurar Padrão
+            </button>
+          </div>
+          <textarea
+            value={data.itensInclusos || ''}
+            onChange={(e) => updateData('itensInclusos', e.target.value)}
+            className="w-full bg-bg border-2 border-border rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-accent transition-colors h-64 resize-none text-sm"
+            placeholder="Lista de itens inclusos..."
+          />
+        </div>
+
+        <div className="bg-bg border-2 border-border p-4 rounded-xl">
+          <h3 className="font-bold text-white text-sm mb-3">Preview - Valores automáticos:</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>
+              <span className="text-muted block text-xs">Geomembrana</span>
+              <span className="text-white font-bold">{area.toFixed(0)} m²</span>
+            </div>
+            <div>
+              <span className="text-muted block text-xs">Espessura</span>
+              <span className="text-white font-bold">{espessura} mm</span>
+            </div>
+            <div>
+              <span className="text-muted block text-xs">Chumbadores</span>
+              <span className="text-white font-bold">~{chumbadores} un</span>
+            </div>
+            <div>
+              <span className="text-muted block text-xs">Cabo de Aço (L.V.)</span>
+              <span className="text-white font-bold">
+                {data.incluirLinhaVida
+                  ? `${metrosCabo} m  ((${data.largura}×2 + ${data.comprimento}×2)×2 +5%)`
+                  : 'Não incluso'}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 

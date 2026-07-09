@@ -184,4 +184,112 @@ export default async function (fastify, opts) {
       return reply.code(400).send({ error: 'Falha ao atualizar proposta', details: error.message })
     }
   })
+
+  fastify.delete('/:id', async function (request, reply) {
+    const { id } = request.params
+    try {
+      // 1. Remove dependências (o schema não tem onDelete: Cascade)
+      await fastify.prisma.proposalItem.deleteMany({ where: { proposalId: id } })
+      await fastify.prisma.commercialConditions.deleteMany({ where: { proposalId: id } })
+      // 2. Remove a proposta
+      await fastify.prisma.proposal.delete({ where: { id } })
+      return reply.code(204).send()
+    } catch (error) {
+      request.log.error(error)
+      if (error.code === 'P2025') return reply.code(404).send({ error: 'Proposta não encontrada' })
+      return reply.code(500).send({ error: 'Erro ao deletar proposta' })
+    }
+  })
+
+  fastify.post('/:id/duplicate', async function (request, reply) {
+    const { id } = request.params
+    try {
+      const original = await fastify.prisma.proposal.findUnique({
+        where: { id },
+        include: { items: true, conditions: true }
+      })
+      if (!original) return reply.code(404).send({ error: 'Proposta não encontrada' })
+
+      // Gera novo número (formato do front: 001-NN/AA)
+      const now = new Date()
+      const ano = now.getFullYear().toString().slice(-2)
+      const random = String(Math.floor(Math.random() * 99) + 1).padStart(2, '0')
+      const novoNumero = `001-${random}/${ano}`
+
+      const isArmazem = original.metadata && original.metadata.tipo === 'armazem'
+
+      if (isArmazem) {
+        // Armazém: só clona o registro + metadata (não usa items/conditions)
+        const copia = await fastify.prisma.proposal.create({
+          data: {
+            number: novoNumero,
+            title: original.title,
+            clientName: original.clientName,
+            clientContact: original.clientContact,
+            clientRole: original.clientRole,
+            location: original.location,
+            phone: original.phone,
+            object: original.object,
+            total: original.total,
+            status: 'DRAFT',
+            metadata: {
+              ...original.metadata,
+              numeroProposta: novoNumero
+            },
+            clientId: original.clientId
+          }
+        })
+        return copia
+      }
+
+      // Padrão/Material: clona registro + items + conditions
+      const metadataClone = original.metadata
+        ? { ...original.metadata, numeroProposta: novoNumero }
+        : original.metadata
+      const copia = await fastify.prisma.proposal.create({
+        data: {
+          number: novoNumero,
+          title: original.title,
+          clientName: original.clientName,
+          clientContact: original.clientContact,
+          clientRole: original.clientRole,
+          location: original.location,
+          phone: original.phone,
+          object: original.object,
+          total: original.total,
+          status: 'DRAFT',
+          metadata: metadataClone,
+          clientId: original.clientId,
+          items: {
+            create: original.items.map(it => ({
+              catalogId: it.catalogId,
+              label: it.label,
+              unit: it.unit,
+              quantity: it.quantity,
+              unitPrice: it.unitPrice,
+              subtotal: it.subtotal
+            }))
+          },
+          conditions: original.conditions ? {
+            create: {
+              downPayment: original.conditions.downPayment,
+              downPaymentDays: original.conditions.downPaymentDays,
+              downPaymentOnStart: original.conditions.downPaymentOnStart,
+              measurementDays: original.conditions.measurementDays,
+              paymentNfDays: original.conditions.paymentNfDays,
+              validityDays: original.conditions.validityDays,
+              executionPeriod: original.conditions.executionPeriod,
+              paymentTerms: original.conditions.paymentTerms,
+              observations: original.conditions.observations
+            }
+          } : undefined
+        },
+        include: { items: true, conditions: true }
+      })
+      return copia
+    } catch (error) {
+      request.log.error(error)
+      return reply.code(500).send({ error: 'Erro ao duplicar proposta', details: error.message })
+    }
+  })
 }

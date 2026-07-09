@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Plus, Search, CheckCircle, XCircle, Send, Clock, Calendar, Download, Loader, Edit } from 'lucide-react';
+import { FileText, Plus, Search, CheckCircle, XCircle, Send, Clock, Calendar, Download, Loader, Edit, Copy, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../shared/Button';
-import { fetchProposals, updateProposalStatus, fetchSettings } from '../../shared/services/api';
+import { fetchProposals, updateProposalStatus, deleteProposal, duplicateProposal, fetchSettings } from '../../shared/services/api';
 import { fmt } from './constants';
 import PdfGenerator from './components/PdfGenerator';
 
@@ -76,6 +76,25 @@ const ProposalsList = () => {
   const handleGeneratePdf = (proposal) => {
     if (generatingId) return;
     setGeneratingId(proposal.id);
+  };
+
+  const handleDuplicate = async (id) => {
+    try {
+      await duplicateProposal(id);
+      await loadProposals();
+    } catch (error) {
+      alert('Falha ao duplicar proposta');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta proposta?')) return;
+    try {
+      await deleteProposal(id);
+      await loadProposals();
+    } catch (error) {
+      alert('Falha ao excluir proposta');
+    }
   };
 
   const filtered = proposals.filter(p => {
@@ -215,6 +234,20 @@ const ProposalsList = () => {
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex items-center justify-end gap-3">
+                          <button
+                            onClick={() => handleDuplicate(p.id)}
+                            title="Duplicar Proposta"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border-2 border-border bg-bg text-muted hover:border-[#8B5CF6] hover:text-[#8B5CF6] hover:bg-[#8B5CF6]/10 transition-all"
+                          >
+                            <Copy size={12} /> Duplicar
+                          </button>
+                          <button
+                            onClick={() => handleDelete(p.id)}
+                            title="Excluir Proposta"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border-2 border-border bg-bg text-muted hover:border-danger hover:text-danger hover:bg-danger/10 transition-all"
+                          >
+                            <Trash2 size={12} /> Excluir
+                          </button>
                           <button
                             onClick={() => navigate(editPath)}
                             title="Editar Proposta"
