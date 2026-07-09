@@ -142,7 +142,7 @@ const ArmazemWizard = () => {
       case 2: return <Step2Dimensoes data={formData} updateData={updateData} />;
       case 3: return <Step3Descricao data={formData} updateData={updateData} />;
       case 4:
-        if (data.modoProposta === 'so_obra') {
+        if (formData.modoProposta === 'so_obra') {
           return <Step4RecomendacaoMaterial data={formData} updateData={updateData} />;
         } else {
           return <Step4EscopoFornecimento data={formData} updateData={updateData} />;

@@ -86,10 +86,10 @@ const Step10Documento = ({ data, companySettings }) => {
             frequenciaMedicao: data.frequenciaMedicao,
             prazoPagamentoMedicao: data.prazoPagamentoMedicao,
             showSaldo: data.showSaldo !== false,
-        saldo: 100
-          - (showEntrada !== false ? parseFloat(data.percentualEntrada || 0) : 0)
-          - ((showMaterial !== false && data.modoProposta !== 'so_obra') ? parseFloat(data.percentualMaterial || 0) : 0)
-          - (showMedicao ? parseFloat(data.percentualMedicao || 0) : 0),
+            saldo: 100
+              - (data.showEntrada !== false ? parseFloat(data.percentualEntrada || 0) : 0)
+              - ((data.showMaterial !== false && data.modoProposta !== 'so_obra') ? parseFloat(data.percentualMaterial || 0) : 0)
+              - (data.showMedicao ? parseFloat(data.percentualMedicao || 0) : 0),
             prazoSaldo: data.prazoSaldo,
             formaPagamento: data.formaPagamento
           },
