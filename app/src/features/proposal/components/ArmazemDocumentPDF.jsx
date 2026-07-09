@@ -575,7 +575,7 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
                   <Text style={{ fontWeight: 'bold' }}>{percentualEntrada}%</Text> de entrada (mobilização):{' '}
                   {data.tipoPrazoEntrada === 'inicio'
                     ? 'pagamento no início da obra.'
-                    : `pagamento em ${prazoEntrada} dias.`}
+                    : `pagamento em ${prazoEntrada || '28'} dias.`}
                 </Text>
               </View>
             )}
@@ -606,7 +606,7 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
           </View>
         </View>
 
-{temFaturamentoDireto && data.modoProposta !== 'so_obra' && (
+{temFaturamentoDireto && (
   <View>
     <SectionTitle title="CONDIÇÕES DE FATURAMENTO DIRETO" color={primaryColor} />
     <ParagraphSplitter text={data.condicoesFaturamento} style={styles.paragraph} />
@@ -631,7 +631,7 @@ const ArmazemDocumentPDF = ({ data, companySettings, logoSrc }) => {
               <Text style={styles.valuesCell}>ISS</Text>
               <Text style={styles.valuesCellBold}>{data.impostoISS || '2.79'}%</Text>
             </View>
-        {data.modoProposta !== 'so_obra' && (
+        {(
           <>
             <View style={styles.valuesRow}>
               <Text style={styles.valuesCell}>Materiais</Text>
