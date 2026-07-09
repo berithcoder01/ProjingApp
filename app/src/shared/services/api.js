@@ -113,18 +113,26 @@ export const updateProposalStatus = async (id, status) => {
 };
 
 export const deleteProposal = async (id) => {
+  const token = localStorage.getItem('@orcaai:token');
   const response = await fetch(`${API_URL}/proposals/${id}`, {
     method: 'DELETE',
-    headers: getAuthHeaders(),
+    headers: {
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    },
   });
   if (!response.ok) throw new Error('Falha ao excluir proposta');
   return true;
 };
 
 export const duplicateProposal = async (id) => {
+  const token = localStorage.getItem('@orcaai:token');
   const response = await fetch(`${API_URL}/proposals/${id}/duplicate`, {
     method: 'POST',
-    headers: getAuthHeaders(),
+    headers: {
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
   });
   if (!response.ok) throw new Error('Falha ao duplicar proposta');
   return response.json();
