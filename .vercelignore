@@ -8,3 +8,15 @@ src/
 .env.local
 .env.development.local
 .git/
+make-exec.js
+node_modules/
+package.json
+package-lock.json
+AGENTS.md
+armazem-modo-obra.md
+src/
+.vscode/
+.gitignore
+.env.local
+.env.development.local
+.git/
